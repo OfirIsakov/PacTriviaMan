@@ -28,13 +28,14 @@ def main():
 		recvieved_msg = client_socket.recv(len(MSG)).decode()
 		if recvieved_msg.lower() == MSG.lower(): # check if we got the message
 			print(f"Got message \"{recvieved_msg}\"")
+
+			# return msg to the server
+			print(f"Sending message: \"{MSG}\"")
+			client_socket.send(MSG.encode()) # encode message and send it
+			print(f"Sent!")
 		else:
 			print(f"Didn't receive the message: \"{MSG}\" but received: \"{recvieved_msg}\"")
 
-		# send msg to the server
-		print(f"Sending message: \"{MSG}\"")
-		client_socket.send(MSG.encode()) # encode message and send it
-		print(f"Sent!")
 	except Exception as e:
 		print(f"ERROR: {e}")
 

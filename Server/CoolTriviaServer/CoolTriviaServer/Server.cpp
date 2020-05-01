@@ -71,6 +71,9 @@ void Server::accept()
 	// the function that handle the conversation with the client
 	this->_serverThreads.push_back(std::thread(&Server::clientHandler, this, client_socket));
 	this->_serverThreads.back().detach();
+
+	LoginRequestHandler clientHandler;
+	this->_clientsConnected.emplace(client_socket, clientHandler);
 }
 
 

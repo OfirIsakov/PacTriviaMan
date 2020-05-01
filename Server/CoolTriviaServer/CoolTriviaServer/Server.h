@@ -5,10 +5,13 @@
 #include <string>
 #include <vector>
 #include <thread>
+#include <map>
+#include "LoginRequestHandler.h"
 
 using std::vector;
 using std::string;
 using std::thread;
+using std::map;
 
 class Server
 {
@@ -27,6 +30,6 @@ private:
 	vector<thread> _serverThreads;
 	string _serverIp;
 	int _port;
-	string _usersConnected;
+	map<SOCKET, LoginRequestHandler> _clientsConnected;
 
 };

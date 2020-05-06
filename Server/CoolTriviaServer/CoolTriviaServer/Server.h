@@ -1,35 +1,15 @@
 #pragma once
 
-#include <WinSock2.h>
-#include <Windows.h>
-#include <string>
-#include <vector>
-#include <thread>
-#include <map>
-#include "LoginRequestHandler.h"
-
-using std::vector;
-using std::string;
-using std::thread;
-using std::map;
+#include "Communicator.h"
 
 class Server
 {
 public:
-	Server();
-	~Server();
-	void serve(int port);
-	int getPort() const;
+	void run();
 
 private:
 
-	void accept();
-	void clientHandler(SOCKET clientSocket);
-
+	Communicator m_communicator;
 	SOCKET _serverSocket;
-	vector<thread> _serverThreads;
-	string _serverIp;
-	int _port;
-	map<SOCKET, LoginRequestHandler> _clientsConnected;
 
 };

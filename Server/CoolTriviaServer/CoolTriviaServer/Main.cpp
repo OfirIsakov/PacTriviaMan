@@ -30,7 +30,7 @@ void serverServe()
 		std::cout << "Get into Serve!";
 		WSAInitializer wsaInit;
 		Server myServer;
-		myServer.serve(myServer.getPort());
+		myServer.run();
 	}
 	catch (std::exception & e)
 	{

@@ -139,6 +139,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Communicator.cpp" />
+    <ClCompile Include="Helper.cpp" />
     <ClCompile Include="IRequestHandler.cpp" />
     <ClCompile Include="LoginRequestHandler.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -148,6 +149,7 @@
   <ItemGroup>
     <ClInclude Include="Communicator.h" />
     <ClInclude Include="consts.h" />
+    <ClInclude Include="Helper.h" />
     <ClInclude Include="IRequestHandler.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="LoginRequestHandler.h" />

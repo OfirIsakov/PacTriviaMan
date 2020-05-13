@@ -40,3 +40,9 @@ string Helper::padNumber(int num, int digits)
 	ostr << std::setw(digits) << std::setfill('0') << num;
 	return ostr.str();
 }
+
+// function converts the four given bytes into an int
+int Helper::convertFourBytesToInt(unsigned char buffer[])
+{
+	return (buffer[0] << 24) | (buffer[1] << 16) | (buffer[2] << 8) | (buffer[3]);
+}

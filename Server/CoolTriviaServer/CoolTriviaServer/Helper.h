@@ -17,7 +17,9 @@ using std::string;
 
 class Helper
 {
+public:
 	static char* readFromSocket(SOCKET sc, int bytesNum, int flags = 0);
 	static void sendData(SOCKET sc, std::string message);
 	static std::string padNumber(int num, int digits);
+	static int convertFourBytesToInt(unsigned char buffer[]);
 };

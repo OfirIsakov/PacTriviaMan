@@ -22,4 +22,5 @@ public:
 	static void sendData(SOCKET sc, std::string message);
 	static std::string padNumber(int num, int digits);
 	static int convertFourBytesToInt(unsigned char buffer[]);
+	static unsigned char* convertIntToFourBytes(int num);
 };

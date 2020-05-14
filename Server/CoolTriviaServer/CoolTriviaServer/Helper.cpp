@@ -46,3 +46,20 @@ int Helper::convertFourBytesToInt(unsigned char buffer[])
 {
 	return (buffer[0] << 24) | (buffer[1] << 16) | (buffer[2] << 8) | (buffer[3]);
 }
+
+/*
+Fucntion will convert in to four bytes as a unsigned char array
+Input:
+	num - the number to convert
+Output:
+	the array - 4 bytes
+*/
+unsigned char* Helper::convertIntToFourBytes(int num)
+{
+	unsigned char* buffer = new unsigned char[4];
+	for (int i = 0; i < 4; i++)
+	{
+		buffer[i] = (num >> (24 - i * 8)) & 0xFF;
+	}
+	return buffer;
+}

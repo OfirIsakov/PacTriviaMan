@@ -8,5 +8,6 @@
 enum messageCodes
 {
 	signup = 1,
-	login = 2
+	login = 2,
+	error = 3
 };

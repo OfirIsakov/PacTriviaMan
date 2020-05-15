@@ -59,6 +59,7 @@ unsigned char* Helper::convertIntToFourBytes(int num)
 	unsigned char* buffer = new unsigned char[4];
 	for (int i = 0; i < 4; i++)
 	{
+		buffer[i] = '\0';
 		buffer[i] = (num >> (24 - i * 8)) & 0xFF;
 	}
 	return buffer;

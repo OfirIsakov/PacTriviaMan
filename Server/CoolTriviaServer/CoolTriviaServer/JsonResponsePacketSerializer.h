@@ -1,6 +1,8 @@
 #pragma once
 
+#include <iostream>
 #include <string>
+#include <algorithm>
 #include "Helper.h"
 #include "consts.h"
 

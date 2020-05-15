@@ -7,7 +7,36 @@ bool LoginRequestHandler::isRequestRelevant(RequestInfo info)
 
 RequestResult LoginRequestHandler::handleRequest(RequestInfo info)
 {
-	//TODO serilize an answer to the client and add the next state for the user
-	RequestResult result = {  }; //TODO The new state should be `MenuRequestHandler` but in this current version its not implemented or declared
+	SignupRequest signupRequest;
+	LoginRequest loginRequest;
+
+	SignupResponse signupReponse;
+	LoginResponse loginReponse;
+	ErrorResponse errorReponse;
+
+	unsigned char* answer;
+	switch (info.id)
+	{
+	case signup:
+		signupRequest = JsonRequestPacketDeserializer::deserializeSignupRequest(info.buffer);
+		//TODO add logic to work on buffer here
+
+		signupReponse = { 1 };
+		answer = JsonResponsePacketSerializer::serializeSignUpResponse(signupReponse);
+		break;
+	case login:
+		loginRequest = JsonRequestPacketDeserializer::deserializeLoginRequest(info.buffer);
+		//TODO add logic to work on buffer here
+
+		loginReponse = { 1 };
+		answer = JsonResponsePacketSerializer::serializeLoginResponse(loginReponse);
+		break;
+	default:
+		errorReponse = { "ERROR" };
+		answer = JsonResponsePacketSerializer::serializeErrorResponse(errorReponse);
+		break;
+	}
+	LoginRequestHandler* nextHandler = new LoginRequestHandler(); //TODO The new state should be `MenuRequestHandler` but in this current version its not implemented  or declared
+	RequestResult result = { answer, nextHandler };
 	return result;
 }

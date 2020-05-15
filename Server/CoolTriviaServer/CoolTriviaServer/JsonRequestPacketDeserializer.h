@@ -5,7 +5,7 @@
 
 class JsonRequestPacketDeserializer
 {
-
+public:
 	static LoginRequest deserializeLoginRequest(unsigned char* Buffer);
 	static SignupRequest deserializeSignupRequest(unsigned char* Buffer);
 };

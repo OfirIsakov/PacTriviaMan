@@ -24,7 +24,6 @@ vector<unsigned char> JsonResponsePacketSerializer::serializeErrorResponse(Error
 // Function will create the response by the correct parameters
 vector<unsigned char> JsonResponsePacketSerializer::createResponse(int codeBit, string jsonString, int length)
 {
-	string jsonString = "";
 	vector<unsigned char> buffer = {}, temp = {};
 
 	// code bit

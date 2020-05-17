@@ -6,18 +6,19 @@
 
 using std::string;
 using std::time_t;
+using std::vector;
 class IRequestHandler;
 
 typedef struct RequestInfo
 {
 	int id; // message code
 	time_t receivalTime; // seconds since epoch
-	unsigned char* buffer;
+	vector<unsigned char> buffer;
 } RequestInfo;
 
 typedef struct RequestResult
 {
-	unsigned char* response; 
+	vector<unsigned char> response;
 	IRequestHandler* newHandler;
 } RequestResult;
 

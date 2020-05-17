@@ -1,19 +1,24 @@
 #include "JsonRequestPacketDeserializer.h"
 
-LoginRequest JsonRequestPacketDeserializer::deserializeLoginRequest(unsigned char* Buffer)
+LoginRequest JsonRequestPacketDeserializer::deserializeLoginRequest(vector<unsigned char> Buffer)
 {
-	json messageInfo = json::parse(Buffer);
+	string jsonBuffer(Buffer.begin(), Buffer.end());
+	json messageInfo = json::parse(jsonBuffer);
 
-	LoginRequest request = { messageInfo["username"], messageInfo["password"] };
+	LoginRequest request = { messageInfo.at("username"), messageInfo.at("password") };
 
 	return request;
 }
 
-SignupRequest JsonRequestPacketDeserializer::deserializeSignupRequest(unsigned char* Buffer)
+SignupRequest JsonRequestPacketDeserializer::deserializeSignupRequest(vector<unsigned char> Buffer)
 {
-	json messageInfo = json::parse(Buffer);
+	//for (const unsigned char& c : Buffer)
+	//	std::cout << c;
 
-	SignupRequest request = { messageInfo["username"], messageInfo["password"], messageInfo["email"] };
+	string jsonBuffer(Buffer.begin(), Buffer.end());
+	json messageInfo = json::parse(jsonBuffer);
+
+	SignupRequest request = { messageInfo.at("username"), messageInfo.at("password"), messageInfo.at("mail") };
 
 	return request;
 }

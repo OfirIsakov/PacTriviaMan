@@ -21,8 +21,7 @@ class Helper
 {
 public:
 	static char* readFromSocket(SOCKET sc, int bytesNum, int flags = 0);
-	static void sendData(SOCKET sc, std::string message);
-	static std::string padNumber(int num, int digits);
+	static void sendData(SOCKET sc, vector<unsigned char> message);
 	static int convertFourBytesToInt(unsigned char buffer[]);
 	static vector<unsigned char> convertIntToFourBytes(int num);
 };

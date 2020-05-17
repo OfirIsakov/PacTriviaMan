@@ -6,12 +6,19 @@
 #include <vector>
 #include <thread>
 #include <map>
+
 #include "IRequestHandler.h"
+#include "JsonRequestPacketDeserializer.h"
+#include "JsonResponsePacketSerializer.h"
+
 
 using std::vector;
 using std::string;
 using std::thread;
 using std::map;
+using std::find;
+using std::localtime;
+
 
 class Communicator
 {

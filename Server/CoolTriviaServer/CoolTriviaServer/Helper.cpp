@@ -1,6 +1,7 @@
 #include "Helper.h"
 
 // recieve data from socket according byteSize
+//WARNING: dont forget to delete it
 char* Helper::readFromSocket(SOCKET sc, int bytesNum, int flags)
 {
 	if (bytesNum == 0)
@@ -23,22 +24,15 @@ char* Helper::readFromSocket(SOCKET sc, int bytesNum, int flags)
 }
 
 // send data to socket
-void Helper::sendData(SOCKET sc, string message)
+void Helper::sendData(SOCKET sc, vector<unsigned char> message)
 {
-	const char* data = message.c_str();
+	string buffer(message.begin(), message.end());
+	const char* data = buffer.c_str();
 
-	if (send(sc, data, message.size(), 0) == INVALID_SOCKET)
+	if (send(sc, data, buffer.size(), 0) == INVALID_SOCKET)
 	{
 		throw std::exception("Error while sending message to client");
 	}
-}
-
-// return string after padding zeros if necessary
-string Helper::padNumber(int num, int digits)
-{
-	std::ostringstream ostr;
-	ostr << std::setw(digits) << std::setfill('0') << num;
-	return ostr.str();
 }
 
 // function converts the four given bytes into an int

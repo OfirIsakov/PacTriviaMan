@@ -8,24 +8,23 @@ CODE_BYTES_SIZE = 1
 LENGTH_BYTES_SIZE = 4
 SIGN_UP_CODE = 1
 LOGIN_CODE = 2
-SIGN_UP_REQUEST = json.loads('{"username": "user1", "password": "1234"}')
-LOGIN_REQUEST = json.loads('{"username": "user1", "password": "1234", "mail": "user1@gmail.com"}')
+SIGN_UP_REQUEST = json.loads('{"username":"user1","password":"1234","mail":"user1@gmail.com"}')
+LOGIN_REQUEST = json.loads('{"username":"user1","password":"1234"}')
 MIN_PORT = 1024
 MAX_PORT = 65535
 CLIENT_SOCKET = None
 
 
 # the function receives the message form the server in the known protocol, else throws error
-# return format (message_code, message_length, message_in_json)
+# return format (message_code, message_length, raw_message)
 def receive_message():
 	try:
 		message_code = int.from_bytes(CLIENT_SOCKET.recv(CODE_BYTES_SIZE), byteorder='big', signed=False)
 		message_length = int.from_bytes(CLIENT_SOCKET.recv(5), byteorder='big', signed=False)
 		message = CLIENT_SOCKET.recv(message_length).decode()
-		json_message = json.loads(message)
 	except Exception as e:
 		raise e
-	return (message_code, message_length, json_message)
+	return (message_code, message_length, message)
 
 
 # function serializes the given message and sends it
@@ -46,19 +45,19 @@ def main():
 		except Exception:
 			server_port = DEFAULT_PORT
 
+
 		print(f"Connecting to {IP} on port {server_port}...")
 		CLIENT_SOCKET = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # create TCP socket
 		CLIENT_SOCKET.connect((IP, server_port)) # try to connect to the server
 		print(f"Connected!")
 
-		serelize_and_send(SIGN_UP_CODE, SIGN_UP_REQUEST, 'sign-up')
-
-		# receive msg from server and print it
-		message = receive_message()
-		print('received:')
-		print(message)
-
-		serelize_and_send(LOGIN_CODE, LOGIN_REQUEST, 'login')
+		user_input = input("1) Signup\n2)Login\n: ")
+		if user_input == '1':
+			serelize_and_send(SIGN_UP_CODE, SIGN_UP_REQUEST, 'sign-up')
+		elif user_input == '2':
+			serelize_and_send(LOGIN_CODE, LOGIN_REQUEST, 'login')
+		else:
+			raise RuntimeError("REEEE not a code")
 
 		# receive msg from server and print it
 		message = receive_message()

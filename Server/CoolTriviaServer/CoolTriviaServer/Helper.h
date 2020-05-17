@@ -9,11 +9,13 @@
 #include <fstream>
 #include <iomanip>
 #include <sstream>
+#include <vector>
 
 #include "json.hpp"
 
 using json = nlohmann::json;
 using std::string;
+using std::vector;
 
 class Helper
 {
@@ -22,5 +24,5 @@ public:
 	static void sendData(SOCKET sc, std::string message);
 	static std::string padNumber(int num, int digits);
 	static int convertFourBytesToInt(unsigned char buffer[]);
-	static unsigned char* convertIntToFourBytes(int num);
+	static vector<unsigned char> convertIntToFourBytes(int num);
 };

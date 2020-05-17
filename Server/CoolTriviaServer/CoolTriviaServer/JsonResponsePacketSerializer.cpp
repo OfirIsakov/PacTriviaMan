@@ -1,87 +1,43 @@
 #include "JsonResponsePacketSerializer.h"
 
 // Function will serialize the login message
-unsigned char* JsonResponsePacketSerializer::serializeLoginResponse(LoginResponse res)
+vector<unsigned char> JsonResponsePacketSerializer::serializeLoginResponse(LoginResponse res)
 {
-	json signupJson = json({ "status", res.status });
-	string stringBuffer;
-	int bufferLength = signupJson.dump().length() + 5;
-	unsigned char* buffer = new unsigned char[bufferLength];
-	std::fill(buffer, buffer + signupJson.dump().length() + 5, '\0'); // reseting the array
-
-	// code bit
-	char codeBuffer[2] = { 0 };
-	codeBuffer[0] = (char)login;
-	stringBuffer += string(codeBuffer);
-
-	// length bit
-	char* tmp;
-	tmp = (char*)Helper::convertIntToFourBytes(signupJson.dump().length());
-	stringBuffer += string(tmp, 4);
-
-	// json bit
-	stringBuffer += string(signupJson.dump().c_str(), signupJson.dump().length());
-
-	for (int i = 0; i < bufferLength; i++) {
-		buffer[i] = stringBuffer[i];
-	}
-
-	return buffer;
+	json loginJson = json({ "status", res.status });	
+	return createResponse(login, loginJson.dump(), loginJson.dump().length());
 }
 
 // Function will serialize the signup message
-unsigned char* JsonResponsePacketSerializer::serializeSignUpResponse(SignupResponse res)
+vector<unsigned char> JsonResponsePacketSerializer::serializeSignUpResponse(SignupResponse res)
 {
 	json signupJson = json({ "status", res.status });
-	string stringBuffer;
-	int bufferLength = signupJson.dump().length() + 5;
-	unsigned char* buffer = new unsigned char[bufferLength];
-	std::fill(buffer, buffer + signupJson.dump().length() + 5, '\0'); // reseting the array
-
-	// code bit
-	char codeBuffer[2] = { 0 };
-	codeBuffer[0] = (char)signup;
-	stringBuffer += string(codeBuffer);
-
-	// length bit
-	char* tmp;
-	tmp = (char*)Helper::convertIntToFourBytes(signupJson.dump().length());
-	stringBuffer += string(tmp, 4);
-
-	// json bit
-	stringBuffer += string(signupJson.dump().c_str(), signupJson.dump().length());
-
-	for (int i = 0; i < bufferLength; i++) {
-		buffer[i] = stringBuffer[i];
-	}
-
-	return buffer;
+	return createResponse(signup, signupJson.dump(), signupJson.dump().length());
 }
 
 // Function will serialize the error message
-unsigned char* JsonResponsePacketSerializer::serializeErrorResponse(ErrorResponse res)
+vector<unsigned char> JsonResponsePacketSerializer::serializeErrorResponse(ErrorResponse res)
 {
 	json errorJson = json({ "message", res.message });
-	string stringBuffer;
-	int bufferLength = errorJson.dump().length() + 5;
-	unsigned char* buffer = new unsigned char[bufferLength];
-	std::fill(buffer, buffer + errorJson.dump().length() + 5, '\0'); // reseting the array
+	return createResponse(error, errorJson.dump(), errorJson.dump().length());
+}
+
+// Function will create the response by the correct parameters
+vector<unsigned char> JsonResponsePacketSerializer::createResponse(int codeBit, string jsonString, int length)
+{
+	string jsonString = "";
+	vector<unsigned char> buffer = {}, temp = {};
 
 	// code bit
-	char codeBuffer[2] = { 0 };
-	codeBuffer[0] = (char)error;
-	stringBuffer += string(codeBuffer);
+	buffer.push_back((unsigned char)codeBit);
 
-	// length bit
-	char* tmp;
-	tmp = (char*)Helper::convertIntToFourBytes(errorJson.dump().length());
-	stringBuffer += string(tmp, 4);
+	// length bits
+	temp = Helper::convertIntToFourBytes(length);
+	buffer.insert(buffer.end(), temp.begin(), temp.end());
 
-	// json bit
-	stringBuffer += string(errorJson.dump().c_str(), errorJson.dump().length());
-
-	for (int i = 0; i < bufferLength; i++) {
-		buffer[i] = stringBuffer[i];
+	// json bits
+	for (int i = 0; i < jsonString.length(); i++)
+	{
+		buffer.push_back(jsonString[i]);
 	}
 
 	return buffer;

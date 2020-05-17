@@ -54,12 +54,13 @@ Input:
 Output:
 	the array - 4 bytes
 */
-unsigned char* Helper::convertIntToFourBytes(int num)
+vector<unsigned char> Helper::convertIntToFourBytes(int num)
 {
-	unsigned char* buffer = new unsigned char[4];
+	vector<unsigned char> buffer;
+	
 	for (int i = 0; i < 4; i++)
 	{
-		buffer[i] = (num >> (24 - i * 8)) & 0xFF;
+		buffer.push_back((num >> (24 - i * 8)) & 0xFF);
 	}
 	return buffer;
 }

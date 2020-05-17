@@ -1,31 +1,44 @@
 #include "JsonResponsePacketSerializer.h"
 
 // Function will serialize the login message
-unsigned char* JsonResponsePacketSerializer::serializeLoginResponse(LoginResponse res)
+vector<unsigned char> JsonResponsePacketSerializer::serializeLoginResponse(LoginResponse res)
 {
-	json loginJson = json::parse("{\"status\":" + std::to_string(res.status) + "}");
-	unsigned char* buffer = new unsigned char[loginJson.dump.length() + 5];
-
-	buffer = (char)login + Helper::convertIntToFourBytes(loginJson.dump.length()) + loginJson.dump;
-	return buffer;
+	json loginJson = json({ "status", res.status });	
+	return createResponse(login, loginJson.dump(), loginJson.dump().length());
 }
 
 // Function will serialize the signup message
-unsigned char* JsonResponsePacketSerializer::serializeSignUpResponse(SignupResponse res)
+vector<unsigned char> JsonResponsePacketSerializer::serializeSignUpResponse(SignupResponse res)
 {
-	json signupJson = json::parse("{\"status\":" + std::to_string(res.status) + "}");
-	unsigned char* buffer = new unsigned char[signupJson.dump.length() + 5];
-
-	buffer = (char)signup + Helper::convertIntToFourBytes(signupJson.dump.length()) + signupJson.dump;
-	return buffer;
+	json signupJson = json({ "status", res.status });
+	return createResponse(signup, signupJson.dump(), signupJson.dump().length());
 }
 
 // Function will serialize the error message
-unsigned char* JsonResponsePacketSerializer::serializeErrorResponse(ErrorResponse res)
+vector<unsigned char> JsonResponsePacketSerializer::serializeErrorResponse(ErrorResponse res)
 {
-	json errorJson = json::parse("{\"message\":" + res.message + "}");
-	unsigned char* buffer = new unsigned char[errorJson.dump.length() + 5];
+	json errorJson = json({ "message", res.message });
+	return createResponse(error, errorJson.dump(), errorJson.dump().length());
+}
 
-	buffer = (char)error + Helper::convertIntToFourBytes(errorJson.dump.length()) + errorJson.dump;
+// Function will create the response by the correct parameters
+vector<unsigned char> JsonResponsePacketSerializer::createResponse(int codeBit, string jsonString, int length)
+{
+	string jsonString = "";
+	vector<unsigned char> buffer = {}, temp = {};
+
+	// code bit
+	buffer.push_back((unsigned char)codeBit);
+
+	// length bits
+	temp = Helper::convertIntToFourBytes(length);
+	buffer.insert(buffer.end(), temp.begin(), temp.end());
+
+	// json bits
+	for (int i = 0; i < jsonString.length(); i++)
+	{
+		buffer.push_back(jsonString[i]);
+	}
+
 	return buffer;
 }

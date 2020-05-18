@@ -20,7 +20,7 @@ CLIENT_SOCKET = None
 def receive_message():
 	try:
 		message_code = int.from_bytes(CLIENT_SOCKET.recv(CODE_BYTES_SIZE), byteorder='big', signed=False)
-		message_length = int.from_bytes(CLIENT_SOCKET.recv(5), byteorder='big', signed=False)
+		message_length = int.from_bytes(CLIENT_SOCKET.recv(4), byteorder='big', signed=False)
 		message = CLIENT_SOCKET.recv(message_length).decode()
 	except Exception as e:
 		raise e

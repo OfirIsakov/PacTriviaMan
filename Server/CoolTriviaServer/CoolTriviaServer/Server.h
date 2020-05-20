@@ -5,7 +5,10 @@
 #include "SqliteDataBase.h"
 #include "consts.h"
 #include <exception>
+#include <iostream>
 #include <string.h>
+
+using std::runtime_error;
 
 class Server
 {

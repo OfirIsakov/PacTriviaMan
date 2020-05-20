@@ -1,7 +1,9 @@
 #include "Communicator.h"
 #include <iostream>
+#include <ctime>
 #include "consts.h"
 #include "LoginRequestHandler.h"
+#include "Helper.h"
 
 // Communicator Constructor
 Communicator::Communicator()
@@ -31,6 +33,7 @@ Communicator::~Communicator()
 	catch (...) {}
 }
 
+// Function will binds the IP and port and listen to it
 void Communicator::bindAndListen()
 {
 	struct sockaddr_in sa = { 0 };
@@ -58,7 +61,7 @@ void Communicator::bindAndListen()
 	}
 }
 
-
+// Function will handle a new client when it connect to the server
 void Communicator::startHandleRequests()
 {
 	// notice that we step out to the global namespace
@@ -82,26 +85,69 @@ void Communicator::startHandleRequests()
 /*
 Function will handle the client
 Input:
-	clientSocket - the socket of the client
+	none
 Output:
 	none
 */
 void Communicator::handleNewClient()
 {
-	SOCKET clientSocket = m_clients.rbegin()->first;
-	char* data = new char[5 + 1];
-	data[5] = '\0';
-	if (send(clientSocket, "Hello", 5, 0) == INVALID_SOCKET)
+	// get the user socket
+	SOCKET clientSocket = this->m_clients.rbegin()->first;
+	IRequestHandler* currentHandler = this->m_clients.rbegin()->second;
+
+	// init local vars
+	char* code;
+	char* jsonLengthBytes;
+	int jsonLength;
+	char* rawJson;
+	vector<unsigned char> jsonInBytes;
+
+	while (true)
 	{
-		throw std::exception("Error while sending message to client");
+		try
+		{
+			code = Helper::readFromSocket(clientSocket, partCode);
+			jsonLengthBytes = Helper::readFromSocket(clientSocket, partJsonLength);
+
+			jsonLength = Helper::convertFourBytesToInt((unsigned char*)jsonLengthBytes);
+			rawJson = Helper::readFromSocket(clientSocket, jsonLength);
+
+			string a = string(rawJson);
+			std::copy(a.begin(), a.end(), std::back_inserter(jsonInBytes)); // turn the rawJson Buffer into byte vector
+
+			RequestInfo info = { code[0], time(nullptr), jsonInBytes };
+
+			RequestResult result = currentHandler->handleRequest(info);
+
+			delete currentHandler;
+			currentHandler = result.newHandler;
+			for (auto it = this->m_clients.begin(); it != this->m_clients.end(); it++) {
+				if (it->first == clientSocket) {
+					it->second = currentHandler;
+					break;
+				}
+			}
+
+			Helper::sendData(clientSocket, result.response);
+
+			// free up the space so no leaks
+			delete[] code;
+			delete[] jsonLengthBytes;
+			delete[] rawJson;
+		}
+		catch (const std::exception&)
+		{
+			// delete the client element from the map
+			for (auto it = this->m_clients.begin(); it != this->m_clients.end(); it++) {
+				if (it->first == clientSocket) {
+					this->m_clients.erase(it);
+					break;
+				}
+			}
+			closesocket(clientSocket);
+			// exit while loop
+			break;
+		}
+
 	}
-	std::cout << "Send!" << std::endl;
-	int res = recv(clientSocket, data, 5, 0);
-	if (res == INVALID_SOCKET)
-	{
-		std::string s = "Error while recieving from socket: ";
-		s += std::to_string(clientSocket);
-		throw std::exception(s.c_str());
-	}
-	std::cout << "Data: " << data << std::endl;
 }

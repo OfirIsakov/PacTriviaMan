@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include "IDatabase.h"
+#include "CantCreateUserException.h"
 #include "sqlite3.h"
 #include "consts.h"
 
@@ -12,6 +13,7 @@ using std::cout;
 using std::endl;
 using std::string;
 using std::to_string;
+using std::runtime_error;
 
 class SqliteDataBase : public IDatabase
 {

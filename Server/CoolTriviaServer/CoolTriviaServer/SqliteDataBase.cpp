@@ -22,7 +22,7 @@ void SqliteDataBase::openDB()
 	if (res != SQLITE_OK)
 	{
 		this->_db = nullptr;
-		throw std::runtime_error("Can't Open DB");
+		throw runtime_error("Can't Open DB");
 	}
 	if (existDB == -1) // create a new one
 	{
@@ -56,7 +56,7 @@ int SqliteDataBase::changeDB(const string command) const
 bool SqliteDataBase::doesUserExist(string username)
 {
 	// get the users
-	string getUsersCmd = "SELECT USERNAMES FROM USERS;";
+	string getUsersCmd = "SELECT USERNAME FROM USERS;";
 	vector<string> usernames;
 	char* errMessage;
 	int res = sqlite3_exec(this->_db, getUsersCmd.c_str(), getVectorStringCB, &usernames, &errMessage);
@@ -98,7 +98,7 @@ void SqliteDataBase::addNewUser(string username, string passsword, string mail)
 {
 	if (doesUserExist(username))
 	{
-		// throw exception
+		throw CantCreateUserException();
 	}
 	string addUserCmd = "INSERT INTO USERS (USERNAME, PASSWORD, MAIL) VALUES (\"" + username + "\", \"" + passsword + "\", \"" + mail + "\");";
 
@@ -111,7 +111,7 @@ int SqliteDataBase::getVectorStringCB(void* data, int argc, char** argv, char** 
 	vector<string>* usernames;
 	for (int i = 0; i < argc; i++) 
 	{
-		if (std::string(azColName[i]) == "USERMAME") {
+		if (std::string(azColName[i]) == "USERNAME") {
 			reinterpret_cast<vector<string>*>(data)->push_back(argv[i]);
 		}
 	}

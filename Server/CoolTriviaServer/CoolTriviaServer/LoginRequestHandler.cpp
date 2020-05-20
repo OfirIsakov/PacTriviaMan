@@ -14,7 +14,7 @@ RequestResult LoginRequestHandler::handleRequest(RequestInfo info)
 	LoginResponse loginReponse;
 	ErrorResponse errorReponse;
 
-	unsigned char* answer;
+	vector<unsigned char> answer;
 	switch (info.id)
 	{
 	case signup:

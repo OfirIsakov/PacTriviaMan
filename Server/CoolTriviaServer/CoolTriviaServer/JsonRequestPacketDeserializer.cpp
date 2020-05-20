@@ -1,19 +1,23 @@
 #include "JsonRequestPacketDeserializer.h"
 
-LoginRequest JsonRequestPacketDeserializer::deserializeLoginRequest(unsigned char* Buffer)
+// Function will deserialize the login buffer and returns the login struct
+LoginRequest JsonRequestPacketDeserializer::deserializeLoginRequest(vector<unsigned char> Buffer)
 {
-	json messageInfo = json::parse(Buffer);
+	string jsonBuffer(Buffer.begin(), Buffer.end());
+	json messageInfo = json::parse(jsonBuffer);
 
-	LoginRequest request = { messageInfo["username"], messageInfo["password"] };
+	LoginRequest request = { messageInfo.at("username"), messageInfo.at("password") };
 
 	return request;
 }
 
-SignupRequest JsonRequestPacketDeserializer::deserializeSignupRequest(unsigned char* Buffer)
+// Function will deserialize the signup buffer and returns the signup struct
+SignupRequest JsonRequestPacketDeserializer::deserializeSignupRequest(vector<unsigned char> Buffer)
 {
-	json messageInfo = json::parse(Buffer);
+	string jsonBuffer(Buffer.begin(), Buffer.end());
+	json messageInfo = json::parse(jsonBuffer);
 
-	SignupRequest request = { messageInfo["username"], messageInfo["password"], messageInfo["email"] };
+	SignupRequest request = { messageInfo.at("username"), messageInfo.at("password"), messageInfo.at("mail") };
 
 	return request;
 }

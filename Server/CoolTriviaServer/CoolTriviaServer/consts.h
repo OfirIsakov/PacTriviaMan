@@ -11,3 +11,10 @@ enum messageCodes
 	login = 2,
 	error = 3
 };
+
+// protocol consts
+enum protocolParts
+{
+	partCode = 1,
+	partJsonLength = 4
+};

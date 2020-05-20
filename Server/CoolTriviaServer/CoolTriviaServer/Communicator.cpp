@@ -33,6 +33,7 @@ Communicator::~Communicator()
 	catch (...) {}
 }
 
+// Function will binds the IP and port and listen to it
 void Communicator::bindAndListen()
 {
 	struct sockaddr_in sa = { 0 };
@@ -60,7 +61,7 @@ void Communicator::bindAndListen()
 	}
 }
 
-
+// Function will handle a new client when it connect to the server
 void Communicator::startHandleRequests()
 {
 	// notice that we step out to the global namespace
@@ -136,6 +137,7 @@ void Communicator::handleNewClient()
 		}
 		catch (const std::exception&)
 		{
+			// delete the client element from the map
 			for (auto it = this->m_clients.begin(); it != this->m_clients.end(); it++) {
 				if (it->first == clientSocket) {
 					this->m_clients.erase(it);
@@ -143,19 +145,7 @@ void Communicator::handleNewClient()
 				}
 			}
 			closesocket(clientSocket);
-
-			// incase it didnt get deleted, try to delete
-			try
-			{
-				//delete currentHandler;
-				//delete[] code;
-				//delete[] jsonLengthBytes;
-				//delete[] rawJson;
-			}
-			catch (const std::exception&)
-			{
-				// pass
-			}
+			// exit while loop
 			break;
 		}
 

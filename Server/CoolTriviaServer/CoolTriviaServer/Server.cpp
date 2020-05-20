@@ -1,9 +1,7 @@
 #include "Server.h"
-#include <exception>
-#include "consts.h"
-#include <string.h>
 
 void Server::run()
 {
+	m_database = new SqliteDataBase();
 	m_communicator.bindAndListen();
 }

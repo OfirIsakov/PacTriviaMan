@@ -1,5 +1,7 @@
 import socket
 import json
+import random
+import time
 
 
 IP = "127.0.0.1"
@@ -8,8 +10,6 @@ CODE_BYTES_SIZE = 1
 LENGTH_BYTES_SIZE = 4
 SIGN_UP_CODE = 1
 LOGIN_CODE = 2
-SIGN_UP_REQUEST = json.loads('{"username":"user1","password":"1234","mail":"user1@gmail.com"}')
-LOGIN_REQUEST = json.loads('{"username":"user1","password":"1234"}')
 MIN_PORT = 1024
 MAX_PORT = 65535
 CLIENT_SOCKET = None
@@ -51,18 +51,43 @@ def main():
 		CLIENT_SOCKET.connect((IP, server_port)) # try to connect to the server
 		print(f"Connected!")
 
-		user_input = input("1) Signup\n2)Login\n: ")
-		if user_input == '1':
-			serelize_and_send(SIGN_UP_CODE, SIGN_UP_REQUEST, 'sign-up')
-		elif user_input == '2':
-			serelize_and_send(LOGIN_CODE, LOGIN_REQUEST, 'login')
-		else:
-			raise RuntimeError("REEEE not a code")
+		name = str(random.randint(1, 1000000000000))
 
-		# receive msg from server and print it
+		login = {"username": name, "password": "1234"}
+		serelize_and_send(LOGIN_CODE, json.dumps(login), 'login to not registered user: ' + name)
 		message = receive_message()
 		print('received:')
 		print(message)
+		
+		time.sleep(3)
+		signup = {"username": name, "password": "1234", "mail": name + "@gmail.com"}
+		serelize_and_send(SIGN_UP_CODE, json.dumps(signup), 'sign up to a new user: ' + name)
+		message = receive_message()
+		print('received:')
+		print(message)
+
+		time.sleep(3)
+		login = {"username": name, "password": "1234"}
+		serelize_and_send(LOGIN_CODE, json.dumps(login), 'login to not logged in user: ' + name)
+		message = receive_message()
+		print('received:')
+		print(message)
+
+		time.sleep(3)
+		login = {"username": name, "password": "1234"}
+		serelize_and_send(LOGIN_CODE, json.dumps(login), 'login to already logged in user: ' + name)
+		message = receive_message()
+		print('received:')
+		print(message)
+
+		time.sleep(3)
+		signup = {"username": name, "password": "1234", "mail": name + "@gmail.com"}
+		serelize_and_send(SIGN_UP_CODE, json.dumps(signup), 'login to already exists user: ' + name)
+		message = receive_message()
+		print('received:')
+		print(message)
+
+		input('Press enter to quit...')
 	except Exception as e:
 		print(f"ERROR: {e}")
 

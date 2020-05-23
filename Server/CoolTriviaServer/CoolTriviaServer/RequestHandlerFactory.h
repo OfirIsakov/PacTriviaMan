@@ -6,9 +6,7 @@
 #include "LoginManager.h"
 #include "LoginRequestHandler.h"
 
-class Communicator;
 class LoginRequestHandler;
-class Server;
 
 class RequestHandlerFactory
 {

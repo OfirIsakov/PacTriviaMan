@@ -8,7 +8,8 @@
 class LoginManager
 {
 public:
-	
+	LoginManager();
+	LoginManager(IDatabase* database);
 	void signup(string username, string password, string mail);
 	void login(string username, string password);
 	void logout(string username);

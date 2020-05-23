@@ -10,9 +10,9 @@
 // message codes
 enum messageCodes
 {
-	signup = 1,
-	login = 2,
-	error = 3
+	signupCode = 1,
+	loginCode = 2,
+	errorCode = 3
 };
 
 // protocol consts

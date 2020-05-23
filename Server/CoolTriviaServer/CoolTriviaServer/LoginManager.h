@@ -4,6 +4,7 @@
 #include "LoggedUser.h"
 #include "UserIsntExistException.h"
 #include "PasswordIsntMatchException.h"
+#include "AlreadyLoggedInException.h"
 
 class LoginManager
 {

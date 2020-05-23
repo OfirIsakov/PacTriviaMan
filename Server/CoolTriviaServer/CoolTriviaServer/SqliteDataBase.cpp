@@ -56,25 +56,17 @@ int SqliteDataBase::changeDB(const string command) const
 bool SqliteDataBase::doesUserExist(string username)
 {
 	// get the users
-	string getUsersCmd = "SELECT USERNAME FROM USERS;";
-	vector<string> usernames;
+	string getUsersCmd = "SELECT COUNT(*) FROM USERS WHERE USERNAME = \"" + username + "\";";
+	int usernames;
 	char* errMessage;
-	int res = sqlite3_exec(this->_db, getUsersCmd.c_str(), getVectorStringCB, &usernames, &errMessage);
+	int res = sqlite3_exec(this->_db, getUsersCmd.c_str(), countCB, &usernames, &errMessage);
 	if (res != SQLITE_OK)
 	{
 		cout << errMessage << endl;
 		return true; // avoid to insert new user
 	}
 
-	// check if exist
-	for (auto& user : usernames)
-	{
-		if (user.compare(username) == 0)
-		{
-			return true;
-		}
-	}
-	return false;
+	return usernames != 0;
 }
 
 // Function will check if the password is match to the user
@@ -105,16 +97,11 @@ void SqliteDataBase::addNewUser(string username, string passsword, string mail)
 	changeDB(addUserCmd);
 }
 
-// Function is a callback that order the usernames
-int SqliteDataBase::getVectorStringCB(void* data, int argc, char** argv, char** azColName)
+// Function is a callback that count the usernames with the same name as the new user
+int SqliteDataBase::countCB(void* data, int argc, char** argv, char** azColName)
 {
-	vector<string>* usernames;
-	for (int i = 0; i < argc; i++) 
-	{
-		if (std::string(azColName[i]) == "USERNAME") {
-			reinterpret_cast<vector<string>*>(data)->push_back(argv[i]);
-		}
-	}
+	int* count = static_cast<int*>(data);
+	*count = stoi(argv[0]);
 	return 0;
 }
 

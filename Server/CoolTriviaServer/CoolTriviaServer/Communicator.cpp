@@ -6,7 +6,7 @@
 #include "Helper.h"
 
 // Communicator Constructor
-Communicator::Communicator()
+Communicator::Communicator(RequestHandlerFactory& handlerFactory): m_handlerFactory(handlerFactory)
 {
 	// this server use TCP. that why SOCK_STREAM & IPPROTO_TCP
 	// if the server use UDP we will use: SOCK_DGRAM & IPPROTO_UDP
@@ -75,7 +75,8 @@ void Communicator::startHandleRequests()
 
 	std::cout << "Client accepted. Server and client can speak" << std::endl;
 
-	LoginRequestHandler* clientHandler = new LoginRequestHandler();
+	
+	LoginRequestHandler* clientHandler = this->m_handlerFactory.createLoginRequestHandler();
 	this->m_clients.emplace(client_socket, clientHandler);
 	// the function that handle the conversation with the client
 	std::thread cThread(&Communicator::handleNewClient, this);

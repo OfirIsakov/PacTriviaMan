@@ -32,7 +32,7 @@ typedef struct SignupRequest
 {
 	string username;
 	string password;
-	string email;
+	string mail;
 } SignupRequest;
 
 class IRequestHandler

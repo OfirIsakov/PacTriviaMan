@@ -1,5 +1,15 @@
 #include "LoginManager.h"
 
+LoginManager::LoginManager()
+{
+	this->m_database = nullptr;
+}
+
+LoginManager::LoginManager(IDatabase* database)
+{
+	this->m_database = database;
+}
+
 // Function will add the new user into the DB (if the user meets the parameters)
 void LoginManager::signup(string username, string password, string mail)
 {

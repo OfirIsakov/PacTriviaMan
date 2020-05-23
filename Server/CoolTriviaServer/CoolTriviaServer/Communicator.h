@@ -8,6 +8,7 @@
 #include <map>
 
 #include "IRequestHandler.h"
+#include "RequestHandlerFactory.h"
 #include "JsonRequestPacketDeserializer.h"
 #include "JsonResponsePacketSerializer.h"
 
@@ -23,7 +24,7 @@ using std::localtime;
 class Communicator
 {
 public:
-	Communicator();
+	Communicator(RequestHandlerFactory& handlerFactory);
 	~Communicator();
 
 	void bindAndListen();
@@ -33,6 +34,7 @@ private:
 	void startHandleRequests();
 	void handleNewClient();
 
+	RequestHandlerFactory& m_handlerFactory;
 	SOCKET _serverSocket;
 	map<SOCKET, IRequestHandler*> m_clients;
 };

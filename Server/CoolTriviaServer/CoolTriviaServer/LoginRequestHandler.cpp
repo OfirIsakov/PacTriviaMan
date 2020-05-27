@@ -1,42 +1,95 @@
 #include "LoginRequestHandler.h"
 
+LoginRequestHandler::LoginRequestHandler(RequestHandlerFactory& handlerFactory) : m_handlerFactory(handlerFactory), m_loginManager(handlerFactory.getLoginManager())
+{
+}
+
 bool LoginRequestHandler::isRequestRelevant(RequestInfo info)
 {
-	return info.id == login || info.id == signup;
+	return info.id == loginCode || info.id == signupCode;
 }
 
 RequestResult LoginRequestHandler::handleRequest(RequestInfo info)
 {
-	SignupRequest signupRequest;
-	LoginRequest loginRequest;
-
-	SignupResponse signupReponse;
-	LoginResponse loginReponse;
+	IRequestHandler* nextHandler;
+	RequestResult result;
+	vector<unsigned char> answer;
 	ErrorResponse errorReponse;
 
-	vector<unsigned char> answer;
 	switch (info.id)
 	{
-	case signup:
-		signupRequest = JsonRequestPacketDeserializer::deserializeSignupRequest(info.buffer);
-		//TODO add logic to work on buffer here
+	case signupCode:
+		result = this->signup(info);
 
-		signupReponse = { 1 };
-		answer = JsonResponsePacketSerializer::serializeSignUpResponse(signupReponse);
 		break;
-	case login:
-		loginRequest = JsonRequestPacketDeserializer::deserializeLoginRequest(info.buffer);
-		//TODO add logic to work on buffer here
+	case loginCode:
+		result = this->login(info);
 
-		loginReponse = { 1 };
-		answer = JsonResponsePacketSerializer::serializeLoginResponse(loginReponse);
 		break;
 	default:
+		nextHandler = nullptr;
 		errorReponse = { "ERROR" };
 		answer = JsonResponsePacketSerializer::serializeErrorResponse(errorReponse);
+		result = { answer , nextHandler };
 		break;
 	}
-	LoginRequestHandler* nextHandler = new LoginRequestHandler(); //TODO The new state should be `MenuRequestHandler` but in this current version its not implemented  or declared
-	RequestResult result = { answer, nextHandler };
+	return result;
+}
+
+RequestResult LoginRequestHandler::signup(RequestInfo info)
+{
+	IRequestHandler* handler;
+	vector<unsigned char> answer;
+	SignupResponse signupReponse;
+
+	SignupRequest signupRequest = JsonRequestPacketDeserializer::deserializeSignupRequest(info.buffer); // deserialize the buffer
+
+	try
+	{
+		this->m_loginManager.signup(signupRequest.username, signupRequest.password, signupRequest.mail);
+		signupReponse = { successStatus };
+	}
+	catch (const exception&)
+	{
+		signupReponse = { wrongDataStatus };
+	}
+	handler = nullptr;
+
+	// serialize new answer
+	answer = JsonResponsePacketSerializer::serializeSignUpResponse(signupReponse);
+
+	RequestResult result = { answer, handler };
+	return result;
+}
+
+RequestResult LoginRequestHandler::login(RequestInfo info)
+{
+	IRequestHandler* handler;
+	vector<unsigned char> answer;
+	LoginResponse loginReponse;
+
+	LoginRequest loginRequest = JsonRequestPacketDeserializer::deserializeLoginRequest(info.buffer); // deserialize the buffer
+
+	try
+	{
+		this->m_loginManager.login(loginRequest.username, loginRequest.password);
+		handler = new MenuRequestHandler();
+		loginReponse = { successStatus };
+	}
+	catch (const AlreadyLoggedInException&)
+	{
+		handler = nullptr;
+		loginReponse = { wrongDataStatus };
+	}
+	catch (const exception&)
+	{
+		handler = nullptr;
+		loginReponse = { alreadyConnectedStatus };
+	}
+
+	// serialize new answer
+	answer = JsonResponsePacketSerializer::serializeLoginResponse(loginReponse);
+
+	RequestResult result = { answer, handler };
 	return result;
 }

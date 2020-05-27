@@ -4,21 +4,21 @@
 vector<unsigned char> JsonResponsePacketSerializer::serializeLoginResponse(LoginResponse res)
 {
 	json loginJson = json({ "status", res.status });	
-	return createResponse(login, loginJson.dump(), loginJson.dump().length());
+	return createResponse(loginCode, loginJson.dump(), loginJson.dump().length());
 }
 
 // Function will serialize the signup message
 vector<unsigned char> JsonResponsePacketSerializer::serializeSignUpResponse(SignupResponse res)
 {
 	json signupJson = json({ "status", res.status });
-	return createResponse(signup, signupJson.dump(), signupJson.dump().length());
+	return createResponse(signupCode, signupJson.dump(), signupJson.dump().length());
 }
 
 // Function will serialize the error message
 vector<unsigned char> JsonResponsePacketSerializer::serializeErrorResponse(ErrorResponse res)
 {
 	json errorJson = json({ "message", res.message });
-	return createResponse(error, errorJson.dump(), errorJson.dump().length());
+	return createResponse(errorCode, errorJson.dump(), errorJson.dump().length());
 }
 
 // Function will create the response by the correct parameters

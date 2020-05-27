@@ -12,7 +12,7 @@ Communicator::Communicator(RequestHandlerFactory& handlerFactory): m_handlerFact
 	// if the server use UDP we will use: SOCK_DGRAM & IPPROTO_UDP
 	_serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (_serverSocket == INVALID_SOCKET)
-		throw std::exception(__FUNCTION__ " - socket");
+		throw exception(__FUNCTION__ " - socket");
 }
 
 // Communicator Destructor
@@ -45,18 +45,18 @@ void Communicator::bindAndListen()
 	// again stepping out to the global namespace
 	// Connects between the socket and the configuration (port and etc..)
 	if (bind(_serverSocket, (struct sockaddr*) & sa, sizeof(sa)) == SOCKET_ERROR)
-		throw std::exception(__FUNCTION__ " - bind");
+		throw exception(__FUNCTION__ " - bind");
 
 	// Start listening for incoming requests of clients
 	if (listen(_serverSocket, SOMAXCONN) == SOCKET_ERROR)
-		throw std::exception(__FUNCTION__ " - listen");
-	std::cout << "Listening on port " << PORT << std::endl;
+		throw exception(__FUNCTION__ " - listen");
+	cout << "Listening on port " << PORT << endl;
 
 	while (true)
 	{
 		// the main thread is only accepting clients 
 		// and add then to the list of handlers
-		std::cout << "Waiting for client connection request" << std::endl;
+		cout << "Waiting for client connection request" << endl;
 		startHandleRequests();
 	}
 }
@@ -71,15 +71,15 @@ void Communicator::startHandleRequests()
 	SOCKET client_socket = ::accept(_serverSocket, NULL, NULL);
 
 	if (client_socket == INVALID_SOCKET)
-		throw std::exception(__FUNCTION__);
+		throw exception(__FUNCTION__);
 
-	std::cout << "Client accepted. Server and client can speak" << std::endl;
+	cout << "Client accepted. Server and client can speak" << endl;
 
 	
 	LoginRequestHandler* clientHandler = this->m_handlerFactory.createLoginRequestHandler();
 	this->m_clients.emplace(client_socket, clientHandler);
 	// the function that handle the conversation with the client
-	std::thread cThread(&Communicator::handleNewClient, this);
+	thread cThread(&Communicator::handleNewClient, this);
 	cThread.detach();
 }
 
@@ -113,7 +113,6 @@ void Communicator::handleNewClient()
 			jsonLength = Helper::convertFourBytesToInt((unsigned char*)jsonLengthBytes);
 			rawJson = Helper::readFromSocket(clientSocket, jsonLength);
 
-			std::cout << rawJson << std::endl;
 
 			string tempBuffer = string(rawJson);
 			copy(tempBuffer.begin(), tempBuffer.end(), back_inserter(jsonInBytes)); // turn the rawJson Buffer into byte vector
@@ -142,7 +141,7 @@ void Communicator::handleNewClient()
 			delete[] jsonLengthBytes;
 			delete[] rawJson;
 		}
-		catch (const std::exception& e)
+		catch (const exception& e)
 		{
 			cout << e.what() << endl;
 			// delete the client element from the map

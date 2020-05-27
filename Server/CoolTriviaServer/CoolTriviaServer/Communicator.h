@@ -2,6 +2,7 @@
 
 #include <WinSock2.h>
 #include <Windows.h>
+#include <iostream>
 #include <string>
 #include <vector>
 #include <thread>
@@ -19,6 +20,10 @@ using std::thread;
 using std::map;
 using std::find;
 using std::localtime;
+using std::copy;
+using std::back_inserter;
+using std::cout;
+using std::endl;
 
 
 class Communicator

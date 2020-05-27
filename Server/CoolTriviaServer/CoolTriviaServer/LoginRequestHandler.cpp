@@ -47,15 +47,15 @@ RequestResult LoginRequestHandler::signup(RequestInfo info)
 	try
 	{
 		this->m_loginManager.signup(signupRequest.username, signupRequest.password, signupRequest.mail);
+		signupReponse = { successStatus };
 	}
-	catch (const std::exception&)
+	catch (const exception&)
 	{
-		// currenty not doing anything here because you need to login after singup
+		signupReponse = { wrongDataStatus };
 	}
-	handler = new LoginRequestHandler(this->m_handlerFactory);
+	handler = nullptr;
 
 	// serialize new answer
-	signupReponse = { 1 };
 	answer = JsonResponsePacketSerializer::serializeSignUpResponse(signupReponse);
 
 	RequestResult result = { answer, handler };
@@ -74,14 +74,20 @@ RequestResult LoginRequestHandler::login(RequestInfo info)
 	{
 		this->m_loginManager.login(loginRequest.username, loginRequest.password);
 		handler = new MenuRequestHandler();
+		loginReponse = { successStatus };
 	}
-	catch (const std::exception&)
+	catch (const AlreadyLoggedInException&)
 	{
-		handler = new LoginRequestHandler(this->m_handlerFactory);
+		handler = nullptr;
+		loginReponse = { wrongDataStatus };
+	}
+	catch (const exception&)
+	{
+		handler = nullptr;
+		loginReponse = { alreadyConnectedStatus };
 	}
 
 	// serialize new answer
-	loginReponse = { 1 };
 	answer = JsonResponsePacketSerializer::serializeLoginResponse(loginReponse);
 
 	RequestResult result = { answer, handler };

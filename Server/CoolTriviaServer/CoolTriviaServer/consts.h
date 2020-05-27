@@ -15,6 +15,14 @@ enum messageCodes
 	errorCode = 3
 };
 
+// answer statuses
+enum answerStatuses
+{
+	successStatus = 1,
+	wrongDataStatus = 2,
+	alreadyConnectedStatus = 3
+};
+
 // protocol consts
 enum protocolParts
 {

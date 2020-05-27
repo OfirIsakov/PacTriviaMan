@@ -1,5 +1,6 @@
 #pragma once
 
+#include <exception>
 #include "IRequestHandler.h"
 #include "MenuRequestHandler.h"
 #include "JsonRequestPacketDeserializer.h"
@@ -7,6 +8,8 @@
 #include "consts.h"
 #include "LoginManager.h"
 #include "RequestHandlerFactory.h"
+
+using std::exception;
 
 class RequestHandlerFactory;
 

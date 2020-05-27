@@ -113,15 +113,19 @@ void Communicator::handleNewClient()
 			jsonLength = Helper::convertFourBytesToInt((unsigned char*)jsonLengthBytes);
 			rawJson = Helper::readFromSocket(clientSocket, jsonLength);
 
-			string a = string(rawJson);
-			std::copy(a.begin(), a.end(), std::back_inserter(jsonInBytes)); // turn the rawJson Buffer into byte vector
+			std::cout << rawJson << std::endl;
+
+			string tempBuffer = string(rawJson);
+			copy(tempBuffer.begin(), tempBuffer.end(), back_inserter(jsonInBytes)); // turn the rawJson Buffer into byte vector
 
 			RequestInfo info = { code[0], time(nullptr), jsonInBytes };
 
 			RequestResult result = currentHandler->handleRequest(info);
 
-			delete currentHandler;
-			currentHandler = result.newHandler;
+			if (result.newHandler) {
+				delete currentHandler;
+				currentHandler = result.newHandler;
+			}
 			for (auto it = this->m_clients.begin(); it != this->m_clients.end(); it++) {
 				if (it->first == clientSocket) {
 					it->second = currentHandler;
@@ -131,13 +135,16 @@ void Communicator::handleNewClient()
 
 			Helper::sendData(clientSocket, result.response);
 
+			// clear the buffer
+			jsonInBytes.clear();
 			// free up the space so no leaks
 			delete[] code;
 			delete[] jsonLengthBytes;
 			delete[] rawJson;
 		}
-		catch (const std::exception&)
+		catch (const std::exception& e)
 		{
+			cout << e.what() << endl;
 			// delete the client element from the map
 			for (auto it = this->m_clients.begin(); it != this->m_clients.end(); it++) {
 				if (it->first == clientSocket) {

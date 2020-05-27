@@ -3,6 +3,8 @@ import json
 import random
 import time
 
+from threading import Thread
+
 
 IP = "127.0.0.1"
 DEFAULT_PORT = 8820
@@ -17,21 +19,47 @@ CLIENT_SOCKET = None
 
 # the function receives the message form the server in the known protocol, else throws error
 # return format (message_code, message_length, raw_message)
-def receive_message():
+def receive_message(socket):
 	try:
-		message_code = int.from_bytes(CLIENT_SOCKET.recv(CODE_BYTES_SIZE), byteorder='big', signed=False)
-		message_length = int.from_bytes(CLIENT_SOCKET.recv(4), byteorder='big', signed=False)
-		message = CLIENT_SOCKET.recv(message_length).decode()
+		message_code = int.from_bytes(socket.recv(CODE_BYTES_SIZE), byteorder='big', signed=False)
+		message_length = int.from_bytes(socket.recv(4), byteorder='big', signed=False)
+		message = socket.recv(message_length).decode()
 	except Exception as e:
 		raise e
 	return (message_code, message_length, message)
 
 
 # function serializes the given message and sends it
-def serelize_and_send(code: int, json_message: json, title: str=''):
+def serelize_and_send(code: int, json_message: json, socket, title: str=''):
 	print(f"Trying to send {title} request...")
-	CLIENT_SOCKET.send(code.to_bytes(CODE_BYTES_SIZE, byteorder='big') + len(json.dumps(json_message)).to_bytes(LENGTH_BYTES_SIZE, byteorder='big') + json.dumps(json_message).encode()) # connect the message parts, encode it and send it
+	send_data = json.dumps(json_message)[1:-1].replace('\\', '')
+	print(send_data)
+	socket.send(code.to_bytes(CODE_BYTES_SIZE, byteorder='big') + len(send_data).to_bytes(LENGTH_BYTES_SIZE, byteorder='big') + send_data.encode()) # connect the message parts, encode it and send it
 	print(f"Sent!")
+
+
+# function tries to log into an account
+def login_to_user(name: str, server_port: int):
+	print(f"Connecting to {IP} on port {server_port}...")
+	new_client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # create TCP socket
+	new_client_socket.connect((IP, server_port)) # try to connect to the server
+	print(f"Connected!")
+
+	time.sleep(3)
+	login = {"username": name, "password": "1234"}
+	serelize_and_send(LOGIN_CODE, json.dumps(login), new_client_socket, 'login to already logged in user: ' + name)
+	message = receive_message(new_client_socket)
+	print('received:')
+	print(message)
+
+	time.sleep(3)
+	signup = {"username": name, "password": "1234", "mail": name + "@gmail.com"}
+	serelize_and_send(SIGN_UP_CODE, json.dumps(signup), new_client_socket, 'sign up to already exists user: ' + name)
+	message = receive_message(new_client_socket)
+	print('received:')
+	print(message)
+
+
 
 
 def main():
@@ -54,38 +82,29 @@ def main():
 		name = str(random.randint(1, 1000000000000))
 
 		login = {"username": name, "password": "1234"}
-		serelize_and_send(LOGIN_CODE, json.dumps(login), 'login to not registered user: ' + name)
-		message = receive_message()
+		serelize_and_send(LOGIN_CODE, json.dumps(login), CLIENT_SOCKET, 'login to not registered user: ' + name)
+		message = receive_message(CLIENT_SOCKET)
 		print('received:')
 		print(message)
 		
 		time.sleep(3)
 		signup = {"username": name, "password": "1234", "mail": name + "@gmail.com"}
-		serelize_and_send(SIGN_UP_CODE, json.dumps(signup), 'sign up to a new user: ' + name)
-		message = receive_message()
+		serelize_and_send(SIGN_UP_CODE, json.dumps(signup), CLIENT_SOCKET, 'sign up to a new user: ' + name)
+		message = receive_message(CLIENT_SOCKET)
 		print('received:')
 		print(message)
 
 		time.sleep(3)
 		login = {"username": name, "password": "1234"}
-		serelize_and_send(LOGIN_CODE, json.dumps(login), 'login to not logged in user: ' + name)
-		message = receive_message()
+		serelize_and_send(LOGIN_CODE, json.dumps(login), CLIENT_SOCKET, 'login to not logged in user: ' + name)
+		message = receive_message(CLIENT_SOCKET)
 		print('received:')
 		print(message)
 
-		time.sleep(3)
-		login = {"username": name, "password": "1234"}
-		serelize_and_send(LOGIN_CODE, json.dumps(login), 'login to already logged in user: ' + name)
-		message = receive_message()
-		print('received:')
-		print(message)
-
-		time.sleep(3)
-		signup = {"username": name, "password": "1234", "mail": name + "@gmail.com"}
-		serelize_and_send(SIGN_UP_CODE, json.dumps(signup), 'login to already exists user: ' + name)
-		message = receive_message()
-		print('received:')
-		print(message)
+		print('Opening another client to try to log into the same account...')
+		new_account_thread = Thread(target=login_to_user, args=(name, server_port))
+		new_account_thread.start()
+		new_account_thread.join()
 
 		input('Press enter to quit...')
 	except Exception as e:

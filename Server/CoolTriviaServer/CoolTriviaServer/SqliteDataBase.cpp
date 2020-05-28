@@ -16,7 +16,7 @@ SqliteDataBase::~SqliteDataBase()
 void SqliteDataBase::openDB()
 {
 	string dbName = DB_FILE_NAME;
-	string createUsers = "";
+	string createUsers = "", createQuestions = "", insertQuestions = "";
 	int existDB = _access(dbName.c_str(), 0);
 	int res = sqlite3_open(dbName.c_str(), &this->_db);
 	if (res != SQLITE_OK)
@@ -26,10 +26,42 @@ void SqliteDataBase::openDB()
 	}
 	if (existDB == -1) // create a new one
 	{
-		createUsers = "CREATE TABLE USERS (ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, USERNAME TEXT NOT NULL, PASSWORD TEXT NOT NULL, MAIL TEXT NOT NULL );";
-
+		createUsers = "CREATE TABLE Users (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, username text NOT NULL, password text NOT NULL, mail text NOT NULL);";
+		createQuestions = "CREATE TABLE Questions (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, question text NOT NULL, correct_ans text NOT NULL, ans1 text NOT NULL, ans2 text NOT NULL, ans3 text NOT NULL);";
+		insertQuestions = createInsertQuery();
+		
 		changeDB(createUsers);
+		changeDB(createQuestions);
+		changeDB(insertQuestions);
 	}
+}
+
+// Function will create the query of insert the questions
+string SqliteDataBase::createInsertQuery()
+{
+	string query = "INSERT INTO Questions (question, correct_ans, ans1, ans2, ans3) VALUES ";
+	for (int i = 0; i < NUM_OF_Q; i++)
+	{
+		query += "( ";
+		for (int j = 0; j < NUM_OF_DETAILS; j++)
+		{
+			query += QUES_ANS[i][j];
+			if (j != NUM_OF_DETAILS - 1) // Check is it the last element
+			{
+				query += ",";
+			}
+		}
+		query += " )";
+		if (i != NUM_OF_Q - 1) // Check if it the last question
+		{
+			query += ",";
+		}
+		else
+		{
+			query += ";";
+		}
+	}
+	return query;
 }
 
 // Function will close the database

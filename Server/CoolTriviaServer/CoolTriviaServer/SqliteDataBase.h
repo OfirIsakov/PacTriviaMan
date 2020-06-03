@@ -36,6 +36,8 @@ private:
 
 	int changeDB(const std::string command) const;
 
+	string createInsertQuery();
+
 	// callbacks
 	static int countCB(void* data, int argc, char** argv, char** azColName);
 	static int getStringCB(void* data, int argc, char** argv, char** azColName);

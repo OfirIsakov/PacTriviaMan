@@ -29,7 +29,7 @@ RequestResult LoginRequestHandler::handleRequest(RequestInfo info)
 	default:
 		nextHandler = nullptr;
 		errorReponse = { "ERROR" };
-		answer = JsonResponsePacketSerializer::serializeErrorResponse(errorReponse);
+		answer = JsonResponsePacketSerializer::serializeResponse(errorReponse);
 		result = { answer , nextHandler };
 		break;
 	}
@@ -56,7 +56,7 @@ RequestResult LoginRequestHandler::signup(RequestInfo info)
 	handler = nullptr;
 
 	// serialize new answer
-	answer = JsonResponsePacketSerializer::serializeSignUpResponse(signupReponse);
+	answer = JsonResponsePacketSerializer::serializeResponse(signupReponse);
 
 	RequestResult result = { answer, handler };
 	return result;
@@ -88,7 +88,7 @@ RequestResult LoginRequestHandler::login(RequestInfo info)
 	}
 
 	// serialize new answer
-	answer = JsonResponsePacketSerializer::serializeLoginResponse(loginReponse);
+	answer = JsonResponsePacketSerializer::serializeResponse(loginReponse);
 
 	RequestResult result = { answer, handler };
 	return result;

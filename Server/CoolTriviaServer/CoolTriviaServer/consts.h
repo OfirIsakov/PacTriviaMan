@@ -27,7 +27,13 @@ enum messageCodes
 {
 	signupCode = 1,
 	loginCode = 2,
-	errorCode = 3
+	errorCode = 3,
+	createRoomCode = 4,
+	getRoomsCode = 5,
+	getPlayersInCode = 6,
+	joinRoomCode = 7,
+	getStatisticsCode = 8,
+	logoutCode = 9
 };
 
 // answer statuses

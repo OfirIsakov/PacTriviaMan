@@ -34,7 +34,7 @@ vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(GetRoomsRe
 	string roomsStr = "";
 	for (int i = 0; i < res.rooms.size() - 1; i++)
 	{
-		roomsStr += res.rooms[i].getName();
+		roomsStr += res.rooms[i].name;
 		if (i != res.rooms.size() - 1)
 		{
 			roomsStr += ", ";
@@ -78,6 +78,7 @@ vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(CreateRoom
 vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(GetStatisticsResponse res)
 {
 	// TODO
+	return vector<unsigned char>();
 }
 
 // Function will create the response by the correct parameters

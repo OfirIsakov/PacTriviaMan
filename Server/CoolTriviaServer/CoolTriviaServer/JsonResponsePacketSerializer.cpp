@@ -78,6 +78,7 @@ vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(CreateRoom
 vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(GetStatisticsResponse res)
 {
 	// TODO
+	return vector<unsigned char>();
 }
 
 // Function will create the response by the correct parameters

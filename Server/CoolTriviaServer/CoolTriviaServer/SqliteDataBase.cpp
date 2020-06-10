@@ -16,7 +16,7 @@ SqliteDataBase::~SqliteDataBase()
 void SqliteDataBase::openDB()
 {
 	string dbName = DB_FILE_NAME;
-	string createUsers = "", createQuestions = "", insertQuestions = "";
+	string insertQuestions = "";
 	int existDB = _access(dbName.c_str(), 0);
 	int res = sqlite3_open(dbName.c_str(), &this->_db);
 	if (res != SQLITE_OK)
@@ -26,12 +26,11 @@ void SqliteDataBase::openDB()
 	}
 	if (existDB == -1) // create a new one
 	{
-		createUsers = "CREATE TABLE Users (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, username text NOT NULL, password text NOT NULL, mail text NOT NULL);";
-		createQuestions = "CREATE TABLE Questions (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, question text NOT NULL, correct_ans text NOT NULL, ans1 text NOT NULL, ans2 text NOT NULL, ans3 text NOT NULL);";
+		for (auto& command : SET_DB)
+		{
+			changeDB(command);
+		}
 		insertQuestions = createInsertQuery();
-		
-		changeDB(createUsers);
-		changeDB(createQuestions);
 		changeDB(insertQuestions);
 	}
 }
@@ -88,10 +87,10 @@ int SqliteDataBase::changeDB(const string command) const
 bool SqliteDataBase::doesUserExist(string username)
 {
 	// get the users
-	string getUsersCmd = "SELECT COUNT(*) FROM USERS WHERE USERNAME = \"" + username + "\";";
+	string getUsersCmd = "SELECT COUNT(*) FROM Users WHERE username = \"" + username + "\";";
 	int usernames;
 	char* errMessage;
-	int res = sqlite3_exec(this->_db, getUsersCmd.c_str(), countCB, &usernames, &errMessage);
+	int res = sqlite3_exec(this->_db, getUsersCmd.c_str(), getIntCB, &usernames, &errMessage);
 	if (res != SQLITE_OK)
 	{
 		cout << errMessage << endl;
@@ -105,7 +104,7 @@ bool SqliteDataBase::doesUserExist(string username)
 bool SqliteDataBase::doesPasswordMatch(string username, string password)
 {
 	string userPassword;
-	string getUserPassCmd = "SELECT PASSWORD FROM USERS WHERE USERNAME = \"" + username + "\";";
+	string getUserPassCmd = "SELECT password FROM Users WHERE username = \"" + username + "\";";
 	char* errMessage;
 	int res = sqlite3_exec(this->_db, getUserPassCmd.c_str(), getStringCB, &userPassword, &errMessage);
 	if (res != SQLITE_OK)
@@ -124,16 +123,16 @@ void SqliteDataBase::addNewUser(string username, string passsword, string mail)
 	{
 		throw CantCreateUserException();
 	}
-	string addUserCmd = "INSERT INTO USERS (USERNAME, PASSWORD, MAIL) VALUES (\"" + username + "\", \"" + passsword + "\", \"" + mail + "\");";
+	string addUserCmd = "INSERT INTO Users (username, password, mail) VALUES (\"" + username + "\", \"" + passsword + "\", \"" + mail + "\");";
 
 	changeDB(addUserCmd);
 }
 
-// Function is a callback that count the usernames with the same name as the new user
-int SqliteDataBase::countCB(void* data, int argc, char** argv, char** azColName)
+// Function is a callback that return int
+int SqliteDataBase::getIntCB(void* data, int argc, char** argv, char** azColName)
 {
-	int* count = static_cast<int*>(data);
-	*count = stoi(argv[0]);
+	int* num = static_cast<int*>(data);
+	*num = stoi(argv[0]);
 	return 0;
 }
 
@@ -142,5 +141,77 @@ int SqliteDataBase::getStringCB(void* data, int argc, char** argv, char** azColN
 {
 	string* pass = reinterpret_cast<string*>(data);
 	*pass = argv[0];
+	return 0;
+}
+
+// Function will return the average answer time of the user
+float SqliteDataBase::getPlayerAverageAnswerTime(string username)
+{
+	string getTimesCmd = "SELECT AVG(answer_time) FROM Data WHERE username = \"" + username + "\";";
+	int avg;
+	char* errMessage;
+	int res = sqlite3_exec(this->_db, getTimesCmd.c_str(), getIntCB, &avg, &errMessage);
+	if (res != SQLITE_OK)
+	{
+		cout << errMessage << endl;
+		return ERROR;
+	}
+	return avg;
+}
+
+// Function will return number of correct answers of the user
+int SqliteDataBase::getNumOfCorrectAnswers(string username)
+{
+	string getCorrectAnsCmd = "SELECT question_id FROM Data WHERE username = \"" + username + "\" AND is_correct = 1;";
+	vector<int>* correctAnswers;
+	char* errMessage;
+	int res = sqlite3_exec(this->_db, getCorrectAnsCmd.c_str(), getIntVectorCB, &correctAnswers, &errMessage);
+	if (res != SQLITE_OK)
+	{
+		cout << errMessage << endl;
+		return ERROR;
+	}
+	return correctAnswers->size();
+}
+
+// Function will return the number of total answers of the user
+int SqliteDataBase::getNumOfTotalAnswers(string username)
+{
+	string getAnswersCmd = "SELECT question_id FROM Data WHERE username = \"" + username + "\";";
+	vector<int>* answers;
+	char* errMessage;
+	int res = sqlite3_exec(this->_db, getAnswersCmd.c_str(), getIntVectorCB, &answers, &errMessage);
+	if (res != SQLITE_OK)
+	{
+		cout << errMessage << endl;
+		return ERROR;
+	}
+	return answers->size();
+}
+
+// Function will return the number of games that the user took part in
+int SqliteDataBase::getNumOfPlayerGames(string username)
+{
+	string getGamesCmd = "SELECT game_id FROM Data WHERE username = \"" + username + "\" ORDER BY game_id ASC;";
+	vector<int>* games;
+	char* errMessage;
+	int res = sqlite3_exec(this->_db, getGamesCmd.c_str(), getIntVectorCB, &games, &errMessage);
+	if (res != SQLITE_OK)
+	{
+		cout << errMessage << endl;
+		return ERROR;
+	}
+
+	return set<int>(games->begin(), games->end()).size();
+}
+
+// Function is a callback that return Vector of int by the command
+int SqliteDataBase::getIntVectorCB(void* data, int argc, char** argv, char** azColName)
+{
+	vector<int>* vec = reinterpret_cast<vector<int>*>(data);
+	for (int i = 0; i < argc; i++)
+	{
+		vec->push_back(stoi(argv[i]));
+	}
 	return 0;
 }

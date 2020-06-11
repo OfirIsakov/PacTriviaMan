@@ -17,6 +17,7 @@ using std::string;
 using std::to_string;
 using std::runtime_error;
 using std::stoi;
+using std::stof;
 using std::set;
 
 class SqliteDataBase : public IDatabase
@@ -29,19 +30,21 @@ public:
 	virtual bool doesUserExist(string username);
 	virtual bool doesPasswordMatch(string username, string password);
 	virtual void addNewUser(string username, string password, string mail);
+	virtual float getPlayerAverageAnswerTime(string username);
+	virtual int getNumOfCorrectAnswers(string username);
+	virtual int getNumOfTotalAnswers(string username);
+	virtual int getNumOfPlayerGames(string username);
+	virtual vector<string> getUsernames();
+
 
 private:
-	
+
 	sqlite3* _db;
 
 	void openDB();
 	void closeDB();
 
 	int changeDB(const string command) const;
-	float getPlayerAverageAnswerTime(string username);
-	int getNumOfCorrectAnswers(string username);
-	int getNumOfTotalAnswers(string username);
-	int getNumOfPlayerGames(string username);
 
 	string createInsertQuery();
 
@@ -49,4 +52,5 @@ private:
 	static int getIntCB(void* data, int argc, char** argv, char** azColName);
 	static int getStringCB(void* data, int argc, char** argv, char** azColName);
 	static int getIntVectorCB(void* data, int argc, char** argv, char** azColName);
+	static int getStringVectorCB(void* data, int argc, char** argv, char** azColName);
 };

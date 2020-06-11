@@ -3,10 +3,12 @@
 #include <io.h>
 #include <iostream>
 #include <vector>
+#include <set>
 #include "IDatabase.h"
 #include "CantCreateUserException.h"
 #include "sqlite3.h"
 #include "consts.h"
+
 
 using std::vector;
 using std::cout;
@@ -15,6 +17,7 @@ using std::string;
 using std::to_string;
 using std::runtime_error;
 using std::stoi;
+using std::set;
 
 class SqliteDataBase : public IDatabase
 {
@@ -34,12 +37,16 @@ private:
 	void openDB();
 	void closeDB();
 
-	int changeDB(const std::string command) const;
+	int changeDB(const string command) const;
+	float getPlayerAverageAnswerTime(string username);
+	int getNumOfCorrectAnswers(string username);
+	int getNumOfTotalAnswers(string username);
+	int getNumOfPlayerGames(string username);
 
 	string createInsertQuery();
 
 	// callbacks
-	static int countCB(void* data, int argc, char** argv, char** azColName);
+	static int getIntCB(void* data, int argc, char** argv, char** azColName);
 	static int getStringCB(void* data, int argc, char** argv, char** azColName);
+	static int getIntVectorCB(void* data, int argc, char** argv, char** azColName);
 };
-

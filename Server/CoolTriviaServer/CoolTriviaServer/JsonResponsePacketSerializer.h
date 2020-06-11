@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <vector>
 #include "Helper.h"
+#include "Room.h"
 #include "consts.h"
 
 using std::string;

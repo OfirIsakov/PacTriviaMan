@@ -2,6 +2,7 @@
 
 #include "IRequestHandler.h"
 #include "Helper.h"
+#include <typeinfo>
 
 class JsonRequestPacketDeserializer
 {

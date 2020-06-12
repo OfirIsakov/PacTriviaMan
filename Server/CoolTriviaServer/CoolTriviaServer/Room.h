@@ -2,6 +2,7 @@
 
 #include <vector>
 #include "LoggedUser.h"
+#include "RoomIsFullException.h"
 
 typedef struct RoomData
 {

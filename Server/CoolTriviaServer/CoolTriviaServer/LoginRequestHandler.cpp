@@ -73,18 +73,18 @@ RequestResult LoginRequestHandler::login(RequestInfo info)
 	try
 	{
 		this->m_loginManager.login(loginRequest.username, loginRequest.password);
-		handler = new MenuRequestHandler();
+		handler = m_handlerFactory.createMenuRequestHandler(loginRequest.username);
 		loginReponse = { successStatus };
 	}
 	catch (const AlreadyLoggedInException&)
 	{
 		handler = nullptr;
-		loginReponse = { wrongDataStatus };
+		loginReponse = { alreadyConnectedStatus};
 	}
 	catch (const exception&)
 	{
 		handler = nullptr;
-		loginReponse = { alreadyConnectedStatus };
+		loginReponse = { wrongDataStatus };
 	}
 
 	// serialize new answer

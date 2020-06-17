@@ -57,7 +57,7 @@ vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(GetPlayers
 		}
 	}
 	json getPlayersInRoomJson = json({ "PlayersInRoom", playersStr });
-	return createResponse(getPlayersInCode, getPlayersInRoomJson.dump(), getPlayersInRoomJson.dump().length());
+	return createResponse(getPlayersInRoomCode, getPlayersInRoomJson.dump(), getPlayersInRoomJson.dump().length());
 }
 
 // Function will serialize the join room message

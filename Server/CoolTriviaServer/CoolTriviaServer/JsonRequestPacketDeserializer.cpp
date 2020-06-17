@@ -43,6 +43,8 @@ CreateRoomRequest JsonRequestPacketDeserializer::deserializeCreateRoomRequest(ve
 {
 	json messageInfo = json::parse(Buffer.begin(), Buffer.end());
 
+	//TODO check if inputs are correct. EX: its not a or -5 and throw error
+	// this may need to be in the client
 	CreateRoomRequest request = { messageInfo.at("roomName"), messageInfo.at("maxUsers"), messageInfo.at("questionCount"), messageInfo.at("answerTimeout") };
 
 	return request;

@@ -163,6 +163,7 @@
     <ClInclude Include="consts.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="IDatabase.h" />
+    <ClInclude Include="InvalidRoomIdException.h" />
     <ClInclude Include="IRequestHandler.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="JsonRequestPacketDeserializer.h" />
@@ -175,6 +176,7 @@
     <ClInclude Include="PasswordIsntMatchException.h" />
     <ClInclude Include="RequestHandlerFactory.h" />
     <ClInclude Include="Room.h" />
+    <ClInclude Include="RoomIsFullException.h" />
     <ClInclude Include="RoomManager.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="sqlite3.h" />

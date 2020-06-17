@@ -7,9 +7,28 @@ RequestHandlerFactory::RequestHandlerFactory(IDatabase* database)
 	this->m_roomManager = RoomManager();
 }
 
+RequestHandlerFactory::~RequestHandlerFactory()
+{
+}
+
 LoginRequestHandler* RequestHandlerFactory::createLoginRequestHandler()
 {
 	return new LoginRequestHandler(*this);
+}
+
+MenuRequestHandler* RequestHandlerFactory::createMenuRequestHandler(string username)
+{
+	return new MenuRequestHandler(*this, LoggedUser(username));
+}
+
+StatisticsManager& RequestHandlerFactory::getStatisticsManager()
+{
+	return this->m_StatisticsManager;
+}
+
+RoomManager& RequestHandlerFactory::getRoomManager()
+{
+	return this->m_roomManager;
 }
 
 LoginManager& RequestHandlerFactory::getLoginManager()

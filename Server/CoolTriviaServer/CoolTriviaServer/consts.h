@@ -33,6 +33,11 @@ const string SET_DB[NUM_OF_COMMANDS] = { "CREATE TABLE Users (id integer PRIMARY
 										 "CREATE TABLE Games (id integer NOT NULL PRIMARY KEY AUTOINCREMENT, status integer NOT NULL, start_time	DATETIME NOT NULL, end_time	DATETIME);",
 										 "CREATE TABLE Data (game_id integer NOT NULL, username text NOT NULL, question_id integer NOT NULL, player_answer text NOT NULL, is_correct integer NOT NULL, answer_time integer NOT NULL, PRIMARY KEY(game_id,username,question_id), FOREIGN KEY(game_id) REFERENCES Games(id), FOREIGN KEY(username) REFERENCES Users(username), FOREIGN KEY(question_id) REFERENCES Questions(id));" };
 
+const string SET_DB[NUM_OF_COMMANDS] = { "CREATE TABLE Users (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, username text NOT NULL, password text NOT NULL, mail text NOT NULL);",
+										 "CREATE TABLE Questions (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, question text NOT NULL, correct_ans text NOT NULL, ans1 text NOT NULL, ans2 text NOT NULL, ans3 text NOT NULL);",
+                                         "CREATE TABLE Games (id integer NOT NULL PRIMARY KEY AUTOINCREMENT, status integer NOT NULL, start_time	DATETIME NOT NULL, end_time	DATETIME);",
+                                         "CREATE TABLE Data (game_id integer NOT NULL, username text NOT NULL, question_id integer NOT NULL, player_answer text NOT NULL, is_correct integer NOT NULL, answer_time integer NOT NULL, PRIMARY KEY(game_id,username,question_id), FOREIGN KEY(game_id) REFERENCES Games(id), FOREIGN KEY(username) REFERENCES Users(username), FOREIGN KEY(question_id) REFERENCES Questions(id));"};
+
 // message codes
 enum messageCodes
 {

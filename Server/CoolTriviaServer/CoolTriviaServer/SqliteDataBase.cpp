@@ -142,7 +142,10 @@ int SqliteDataBase::getIntCB(void* data, int argc, char** argv, char** azColName
 int SqliteDataBase::getStringCB(void* data, int argc, char** argv, char** azColName)
 {
 	string* str = reinterpret_cast<string*>(data);
-	*str = argv[0];
+	if (argc > 0)
+		*str = argv[0];
+	else
+		*str = "";
 	return 0;
 }
 
@@ -158,7 +161,7 @@ float SqliteDataBase::getPlayerAverageAnswerTime(string username)
 		cout << errMessage << endl;
 		return ERROR;
 	}
-	return stoi(avgStr);
+	return stof(avgStr);
 }
 
 // Function will return number of correct answers of the user
@@ -204,7 +207,7 @@ int SqliteDataBase::getNumOfPlayerGames(string username)
 		return ERROR;
 	}
 
-	return set<int>(games.begin(), games.end()).size();
+	return set<int>(games.begin(), games.end()).size(); // ignore the duplicates
 }
 
 // Function is a callback that return Vector of int by the command
@@ -213,8 +216,9 @@ int SqliteDataBase::getIntVectorCB(void* data, int argc, char** argv, char** azC
 	vector<int>* vec = reinterpret_cast<vector<int>*>(data);
 	for (int i = 0; i < argc; i++)
 	{
-		vec->push_back(stof(argv[i]));
+		vec->push_back(stoi(argv[i]));
 	}
+
 	return 0;
 }
 
@@ -247,21 +251,14 @@ int SqliteDataBase::getStringVectorCB(void* data, int argc, char** argv, char** 
 // Function will return the top 5 players with the highest score 
 vector<string> SqliteDataBase::getTopFive()
 {
-	string getScoreOfUser = "SELECT COUNT(is_correct) FROM Data WHERE username = \"";
-	int score, res, counter = 0;
+	int res, counter = 0;
 	char* errMessage;
 	vector<string> usernames = getUsernames(), result;
 	map<int, string> resultMap;
 	// Get the scores
 	for (auto& username : usernames)
 	{
-		res = sqlite3_exec(this->_db, (getScoreOfUser + username + "\";").c_str(), getIntCB, &score, &errMessage);
-		if (res != SQLITE_OK)
-		{
-			cout << errMessage << endl;
-			return usernames;
-		}
-		resultMap.insert(pair<int, string>(score, username));
+		resultMap.insert(pair<int, string>(getNumOfCorrectAnswers(username), username));
 	}
 	// Keep the top 5
 	map<int, string>::iterator it = resultMap.begin();

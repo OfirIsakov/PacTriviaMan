@@ -31,10 +31,8 @@ vector<string> StatisticsManager::getUsersStatistics()
 // Function will return all the statistics of the user
 string StatisticsManager::getUserStats(string username)
 {
-	ostringstream ss;
-	ss << to_string(m_database->getPlayerAverageAnswerTime(username));  // convert the float number to string without add unnecessary zeros
 	return username + ":" + to_string(m_database->getNumOfPlayerGames(username))
 					+ ":" + to_string(m_database->getNumOfTotalAnswers(username))
 					+ ":" + to_string(m_database->getNumOfCorrectAnswers(username))
-					+ ":" + ss.str();
+					+ ":" + to_string(m_database->getPlayerAverageAnswerTime(username));
 }

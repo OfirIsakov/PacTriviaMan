@@ -4,11 +4,11 @@
 #include <iostream>
 #include <vector>
 #include <set>
+#include <map>
 #include "IDatabase.h"
 #include "CantCreateUserException.h"
 #include "sqlite3.h"
 #include "consts.h"
-
 
 using std::vector;
 using std::cout;
@@ -19,6 +19,8 @@ using std::runtime_error;
 using std::stoi;
 using std::stof;
 using std::set;
+using std::map;
+using std::pair;
 
 class SqliteDataBase : public IDatabase
 {
@@ -35,7 +37,7 @@ public:
 	virtual int getNumOfTotalAnswers(string username);
 	virtual int getNumOfPlayerGames(string username);
 	virtual vector<string> getUsernames();
-
+	virtual vector<string> getTopFive();
 
 private:
 

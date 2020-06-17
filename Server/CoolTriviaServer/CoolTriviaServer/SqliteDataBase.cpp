@@ -110,9 +110,8 @@ bool SqliteDataBase::doesPasswordMatch(string username, string password)
 	if (res != SQLITE_OK)
 	{
 		cout << errMessage << endl;
-		return true; // avoid to insert new user
+		return true;  // avoid to insert new user
 	}
-
 	return userPassword.compare(password) == 0;
 }
 
@@ -132,7 +131,10 @@ void SqliteDataBase::addNewUser(string username, string passsword, string mail)
 int SqliteDataBase::getIntCB(void* data, int argc, char** argv, char** azColName)
 {
 	int* num = static_cast<int*>(data);
-	*num = stoi(argv[0]);
+	if (argc > 0)
+		*num = stoi(argv[0]);
+	else
+		*num = 0;
 	return 0;
 }
 
@@ -240,4 +242,40 @@ int SqliteDataBase::getStringVectorCB(void* data, int argc, char** argv, char** 
 		vec->push_back(argv[i]);
 	}
 	return 0;
+}
+
+// Function will return the top 5 players with the highest score 
+vector<string> SqliteDataBase::getTopFive()
+{
+	string getScoreOfUser = "SELECT COUNT(is_correct) FROM Data WHERE username = \"";
+	int score, res, counter = 0;
+	char* errMessage;
+	vector<string> usernames = getUsernames(), result;
+	map<int, string> resultMap;
+	// Get the scores
+	for (auto& username : usernames)
+	{
+		res = sqlite3_exec(this->_db, (getScoreOfUser + username + "\";").c_str(), getIntCB, &score, &errMessage);
+		if (res != SQLITE_OK)
+		{
+			cout << errMessage << endl;
+			return usernames;
+		}
+		resultMap.insert(pair<int, string>(score, username));
+	}
+	// Keep the top 5
+	map<int, string>::iterator it = resultMap.begin();
+	int len = resultMap.size();
+	for (int i = 0; i < len - 5; i++) {
+		resultMap.erase(it);
+		it = resultMap.begin();
+	}
+	// Parse the map to vector
+	for (int i = 0; i < 5; i++)
+	{
+		result.push_back(it->second + ":" + to_string(it->first));
+		it++;
+	}
+
+	return result;
 }

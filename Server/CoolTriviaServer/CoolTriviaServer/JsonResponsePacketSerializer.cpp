@@ -3,28 +3,28 @@
 // Function will serialize the login message
 vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(LoginResponse res)
 {
-	json loginJson = json({ "status", res.status });	
+	json loginJson = json{ "status", res.status };	
 	return createResponse(loginCode, loginJson.dump(), loginJson.dump().length());
 }
 
 // Function will serialize the signup message
 vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(SignupResponse res)
 {
-	json signupJson = json({ "status", res.status });
+	json signupJson = json{ "status", res.status };
 	return createResponse(signupCode, signupJson.dump(), signupJson.dump().length());
 }
 
 // Function will serialize the error message
 vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(ErrorResponse res)
 {
-	json errorJson = json({ "message", res.message });
+	json errorJson = json{ "message", res.message };
 	return createResponse(errorCode, errorJson.dump(), errorJson.dump().length());
 }
 
 // Function will serialize the logout message
 vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(LogoutResponse res)
 {
-	json logoutJson = json({ "status", res.status });
+	json logoutJson = json{ "status", res.status };
 	return createResponse(logoutCode, logoutJson.dump(), logoutJson.dump().length());
 }
 
@@ -40,7 +40,7 @@ vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(GetRoomsRe
 			roomsStr += ", ";
 		}
 	}
-	json getRoomJson = json({ "Rooms", roomsStr });
+	json getRoomJson = json{ "Rooms", roomsStr };
 	return createResponse(getRoomsCode, getRoomJson.dump(), getRoomJson.dump().length());
 }
 
@@ -56,29 +56,38 @@ vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(GetPlayers
 			playersStr += ", ";
 		}
 	}
-	json getPlayersInRoomJson = json({ "PlayersInRoom", playersStr });
+	json getPlayersInRoomJson = json{ "PlayersInRoom", playersStr };
 	return createResponse(getPlayersInRoomCode, getPlayersInRoomJson.dump(), getPlayersInRoomJson.dump().length());
 }
 
 // Function will serialize the join room message
 vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(JoinRoomResponse res)
 {
-	json joinRoomJson = json({ "status", res.status });
+	json joinRoomJson = json{ "status", res.status };
 	return createResponse(joinRoomCode, joinRoomJson.dump(), joinRoomJson.dump().length());
 }
 
 // Function will serialize the create room message
 vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(CreateRoomResponse res)
 {
-	json createRoomJson = json({ "status", res.status });
+	json createRoomJson = json{ "status", res.status };
 	return createResponse(createRoomCode, createRoomJson.dump(), createRoomJson.dump().length());
 }
 
 // Function will serialize the get statistics message
 vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(GetStatisticsResponse res)
 {
-	// TODO
-	return vector<unsigned char>();
+	string userStatsStr, highScoresStr;
+	for (int i = 0; i < res.statistics.size(); i++)
+	{
+		if (i < 5)
+			highScoresStr += res.statistics[i];
+		else
+			userStatsStr += res.statistics[i];
+	}
+
+	json getStatisticsJson = json{ { "UserStatistics", userStatsStr }, { "HighScores", highScoresStr } };
+	return createResponse(getStatisticsCode, getStatisticsJson.dump(), getStatisticsJson.dump().length());
 }
 
 // Function will create the response by the correct parameters

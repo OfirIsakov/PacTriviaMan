@@ -8,21 +8,12 @@ vector<string> StatisticsManager::getStatistics()
 {
 	vector<string> topFive, usersStatistics;
 
-	topFive= getTopFive();
+	topFive = m_database->getTopFive();
 	usersStatistics = getUsersStatistics();
 
 	topFive.insert(topFive.end(), usersStatistics.begin(), usersStatistics.end());
 	
 	return topFive; // The concatenated vector
-}
-
-// Function will return the top five users with the score in vector 
-vector<string> StatisticsManager::getTopFive()
-{
-	vector<string> result;
-	// TODO - By the formula
-
-	return result;
 }
 
 // Function will return the statistics of all the users

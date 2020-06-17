@@ -14,7 +14,6 @@ public:
 private:
 	IDatabase* m_database;
 
-	vector<string> getTopFive();
 	vector<string> getUsersStatistics();
 	string getUserStats(string username);
 };

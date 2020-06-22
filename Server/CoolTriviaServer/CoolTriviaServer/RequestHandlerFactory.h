@@ -10,6 +10,7 @@
 #include "RoomManager.h"
 
 class LoginRequestHandler;
+class MenuRequestHandler;
 
 class RequestHandlerFactory
 {

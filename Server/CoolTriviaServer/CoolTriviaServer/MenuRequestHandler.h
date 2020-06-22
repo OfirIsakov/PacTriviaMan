@@ -4,6 +4,9 @@
 #include "StatisticsManager.h"
 #include "RequestHandlerFactory.h"
 #include "InvalidRoomIdException.h"
+#include "RoomManager.h"
+
+class RequestHandlerFactory;
 
 class MenuRequestHandler : public IRequestHandler
 {

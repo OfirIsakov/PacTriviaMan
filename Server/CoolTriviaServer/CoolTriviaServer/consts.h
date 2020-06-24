@@ -44,11 +44,7 @@ enum messageCodes
 	getPlayersInRoomCode = 6,
 	joinRoomCode = 7,
 	getStatisticsCode = 8,
-	logoutCode = 9,
-	closeRoomCode = 10,
-	startGameCode = 11,
-	getRoomStateCode = 12,
-	leaveRoomCode = 13
+	logoutCode = 9
 };
 
 // answer statuses

@@ -106,7 +106,7 @@ public:
 	static vector<unsigned char> serializeResponse(GetRoomStateResponse res);
 	static vector<unsigned char> serializeResponse(LeaveRoomResponse res);
 
-
+	// General create response
 	static vector<unsigned char> createResponse(int codeBit, string jsonString, int length);
 
 private:

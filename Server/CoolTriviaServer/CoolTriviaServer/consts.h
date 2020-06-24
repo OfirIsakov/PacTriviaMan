@@ -49,6 +49,7 @@ enum messageCodes
 	startGameCode = 11,
 	getRoomStateCode = 12,
 	leaveRoomCode = 13
+
 };
 
 // answer statuses

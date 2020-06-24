@@ -20,3 +20,32 @@ SignupRequest JsonRequestPacketDeserializer::deserializeSignupRequest(vector<uns
 
 	return request;
 }
+
+GetPlayersInRoomRequest JsonRequestPacketDeserializer::deserializeGetPlayersRequest(vector<unsigned char> Buffer)
+{
+	json messageInfo = json::parse(Buffer.begin(), Buffer.end());
+
+	GetPlayersInRoomRequest request = { messageInfo.at("roomId") };
+
+	return request;
+}
+
+JoinRoomRequest JsonRequestPacketDeserializer::deserializeJoinRoomRequest(vector<unsigned char> Buffer)
+{
+	json messageInfo = json::parse(Buffer.begin(), Buffer.end());
+
+	JoinRoomRequest request = { messageInfo.at("roomId") };
+
+	return request;
+}
+
+CreateRoomRequest JsonRequestPacketDeserializer::deserializeCreateRoomRequest(vector<unsigned char> Buffer)
+{
+	json messageInfo = json::parse(Buffer.begin(), Buffer.end());
+
+	//TODO check if inputs are correct. EX: its not a or -5 and throw error
+	// this may need to be in the client
+	CreateRoomRequest request = { messageInfo.at("roomName"), messageInfo.at("maxUsers"), messageInfo.at("questionCount"), messageInfo.at("answerTimeout") };
+
+	return request;
+}

@@ -149,9 +149,12 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MenuRequestHandler.cpp" />
     <ClCompile Include="RequestHandlerFactory.cpp" />
+    <ClCompile Include="Room.cpp" />
+    <ClCompile Include="RoomManager.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="sqlite3.c" />
     <ClCompile Include="SqliteDataBase.cpp" />
+    <ClCompile Include="StatisticsManager.cpp" />
     <ClCompile Include="WSAInitializer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +163,7 @@
     <ClInclude Include="consts.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="IDatabase.h" />
+    <ClInclude Include="InvalidRoomIdException.h" />
     <ClInclude Include="IRequestHandler.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="JsonRequestPacketDeserializer.h" />
@@ -171,9 +175,13 @@
     <ClInclude Include="MyException.h" />
     <ClInclude Include="PasswordIsntMatchException.h" />
     <ClInclude Include="RequestHandlerFactory.h" />
+    <ClInclude Include="Room.h" />
+    <ClInclude Include="RoomIsFullException.h" />
+    <ClInclude Include="RoomManager.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="sqlite3.h" />
     <ClInclude Include="SqliteDataBase.h" />
+    <ClInclude Include="StatisticsManager.h" />
     <ClInclude Include="UserIsntExistException.h" />
     <ClInclude Include="WSAInitializer.h" />
   </ItemGroup>

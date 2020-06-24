@@ -1,22 +1,17 @@
 #include "JsonResponsePacketSerializer.h"
 
-// Function will serialize a message of status
-vector<unsigned char> JsonResponsePacketSerializer::serializeStatusMsg(int code, unsigned int status)
-{
-	json myJson = json{ "status", status };
-	return createResponse(code, myJson.dump(), myJson.dump().length());
-}
-
 // Function will serialize the login message
 vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(LoginResponse res)
 {
-	return serializeStatusMsg(loginCode, res.status);
+	json loginJson = json{ "status", res.status };	
+	return createResponse(loginCode, loginJson.dump(), loginJson.dump().length());
 }
 
 // Function will serialize the signup message
 vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(SignupResponse res)
 {
-	return serializeStatusMsg(signupCode, res.status);
+	json signupJson = json{ "status", res.status };
+	return createResponse(signupCode, signupJson.dump(), signupJson.dump().length());
 }
 
 // Function will serialize the error message
@@ -29,7 +24,8 @@ vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(ErrorRespo
 // Function will serialize the logout message
 vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(LogoutResponse res)
 {
-	return serializeStatusMsg(logoutCode, res.status);
+	json logoutJson = json{ "status", res.status };
+	return createResponse(logoutCode, logoutJson.dump(), logoutJson.dump().length());
 }
 
 // Function will serialize the get room message
@@ -67,62 +63,31 @@ vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(GetPlayers
 // Function will serialize the join room message
 vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(JoinRoomResponse res)
 {
-	return serializeStatusMsg(joinRoomCode, res.status);
+	json joinRoomJson = json{ "status", res.status };
+	return createResponse(joinRoomCode, joinRoomJson.dump(), joinRoomJson.dump().length());
 }
 
 // Function will serialize the create room message
 vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(CreateRoomResponse res)
 {
-	return serializeStatusMsg(createRoomCode, res.status);
+	json createRoomJson = json{ "status", res.status };
+	return createResponse(createRoomCode, createRoomJson.dump(), createRoomJson.dump().length());
 }
 
 // Function will serialize the get statistics message
 vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(GetStatisticsResponse res)
 {
-	string userStatsStr = "", highScoresStr = "";
-	for (int i = 0; i < res.statistics.size() - 1; i++)
+	string userStatsStr, highScoresStr;
+	for (int i = 0; i < res.statistics.size(); i++)
 	{
 		if (i < 5)
-			highScoresStr += res.statistics[i] + ","; // Separate the scores
+			highScoresStr += res.statistics[i];
 		else
-			userStatsStr += res.statistics[i] + ","; // Separate the stats
+			userStatsStr += res.statistics[i];
 	}
-	userStatsStr += res.statistics[res.statistics.size() - 1];
 
 	json getStatisticsJson = json{ { "UserStatistics", userStatsStr }, { "HighScores", highScoresStr } };
 	return createResponse(getStatisticsCode, getStatisticsJson.dump(), getStatisticsJson.dump().length());
-}
-
-// Function will serialize the close game message
-vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(CloseRoomResponse res)
-{
-	return serializeStatusMsg(closeRoomCode, res.status);
-}
-
-// Function will serialize the start game message
-vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(StartGameResponse res)
-{
-	return serializeStatusMsg(startGameCode, res.status);
-}
-
-// Function will serialize the get room state message
-vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(GetRoomStateResponse res)
-{
-	string listOfPlayers = "";
-	for (int i = 0; i < res.players.size() - 1; i++)
-	{
-		listOfPlayers += res.players[i] + ","; // Separate the names
-	}
-	listOfPlayers += res.players[res.players.size() - 1];
-
-	json getRoomStateJson = json{ { "status", res.status }, { "hasGameBegun", res.hasGameBegun }, { "players", listOfPlayers }, { "questionCount", res.questionCount }, { "answerTimeout", res.answerTimeout } };
-	return createResponse(getRoomStateCode, getRoomStateJson.dump(), getRoomStateJson.dump().length());
-}
-
-// Function will serialize the leave room message
-vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(LeaveRoomResponse res)
-{
-	return serializeStatusMsg(leaveRoomCode, res.status);
 }
 
 // Function will create the response by the correct parameters

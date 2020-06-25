@@ -267,6 +267,13 @@ vector<string> SqliteDataBase::getTopFive()
 		resultMap.erase(it);
 		it = resultMap.begin();
 	}
+	if (resultMap.size() < 5) // In case that there are less than 5 players
+	{
+		for (int i = 0; i < 5 - len; i++)
+		{
+			resultMap.insert(pair<int, string>(0, ""));
+		}
+	}
 	// Parse the map to vector
 	for (int i = 0; i < 5; i++)
 	{

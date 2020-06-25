@@ -21,6 +21,18 @@ MenuRequestHandler* RequestHandlerFactory::createMenuRequestHandler(string usern
 	return new MenuRequestHandler(*this, LoggedUser(username));
 }
 
+RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler()
+{
+
+	return new RoomAdminRequestHandler(*this);
+}
+
+RoomMemberRequestHandler* RequestHandlerFactory::createRoomMemberRequestHandler()
+{
+
+	return new RoomMemberRequestHandler(*this);
+}
+
 StatisticsManager& RequestHandlerFactory::getStatisticsManager()
 {
 	return this->m_StatisticsManager;

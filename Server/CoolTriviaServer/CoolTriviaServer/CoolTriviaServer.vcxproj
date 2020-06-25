@@ -160,7 +160,7 @@
     <ClCompile Include="WSAInitializer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CantCreateUserException.h" />
+    <ClInclude Include="UserAlreadyExistsException.h" />
     <ClInclude Include="Communicator.h" />
     <ClInclude Include="consts.h" />
     <ClInclude Include="Helper.h" />

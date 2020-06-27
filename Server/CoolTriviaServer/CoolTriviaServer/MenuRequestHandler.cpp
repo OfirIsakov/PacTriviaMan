@@ -68,8 +68,8 @@ RequestResult MenuRequestHandler::getStatistics(RequestInfo info)
 	vector<unsigned char> answer;
 	GetStatisticsResponse getStatisticsReponse;
 
-
-	getStatisticsReponse = { successStatus, this->m_statisticsManager.getStatistics() };
+	
+	getStatisticsReponse = { successStatus, this->m_statisticsManager.getStatistics(m_user.getUsername()) };
 
 	handler = nullptr; //TODO the handler may need to be changed in the future
 

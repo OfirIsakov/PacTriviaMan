@@ -9,12 +9,10 @@ class StatisticsManager
 {
 public:
 
-	vector<string> getStatistics();
+	vector<string> getStatistics(string username);
 
 private:
 	IDatabase* m_database;
-
-	vector<string> getUsersStatistics();
 	string getUserStats(string username);
 };
 

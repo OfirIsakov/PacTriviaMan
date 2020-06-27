@@ -73,7 +73,7 @@ void Communicator::startHandleRequests()
 	if (client_socket == INVALID_SOCKET)
 		throw exception(__FUNCTION__);
 
-	cout << "Client accepted. Server and client can speak" << endl;
+	cout << "Client accepted. Server and client can speak. socket: " << client_socket << endl;
 
 	
 	LoginRequestHandler* clientHandler = this->m_handlerFactory.createLoginRequestHandler();
@@ -143,6 +143,7 @@ void Communicator::handleNewClient()
 		}
 		catch (const exception& e)
 		{
+			cout << clientSocket << endl;
 			cout << e.what() << endl;
 			// delete the client element from the map
 			for (auto it = this->m_clients.begin(); it != this->m_clients.end(); it++) {

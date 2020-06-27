@@ -251,8 +251,9 @@ int SqliteDataBase::getStringVectorCB(void* data, int argc, char** argv, char** 
 // Function will return the top 5 players with the highest score 
 vector<string> SqliteDataBase::getTopFive()
 {
-	int res, counter = 0;
-	char* errMessage;
+	cout << "Get Top Five" << endl;
+	int counter = 0;
+
 	vector<string> usernames = getUsernames(), result;
 	map<int, string> resultMap;
 	// Get the scores

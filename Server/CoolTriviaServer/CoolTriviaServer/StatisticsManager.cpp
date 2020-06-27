@@ -1,4 +1,6 @@
 #include "StatisticsManager.h"
+#include <exception>
+
 
 // Function will return the statistics 
 // The syntax of the vector:
@@ -7,11 +9,11 @@
 vector<string> StatisticsManager::getStatistics(string username)
 {
 	vector<string> topFive;
-
+	cout << "StatisticsManager - Before Get Top Five" << endl;
 	topFive = m_database->getTopFive();
 
 	topFive.push_back(getUserStats(username));
-	
+
 	return topFive; // Final vector
 }
 

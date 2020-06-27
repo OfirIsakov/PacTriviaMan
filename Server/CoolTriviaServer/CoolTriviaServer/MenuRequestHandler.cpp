@@ -68,7 +68,6 @@ RequestResult MenuRequestHandler::getStatistics(RequestInfo info)
 	vector<unsigned char> answer;
 	GetStatisticsResponse getStatisticsReponse;
 
-	
 	getStatisticsReponse = { successStatus, this->m_statisticsManager.getStatistics(m_user.getUsername()) };
 
 	handler = nullptr; //TODO the handler may need to be changed in the future
@@ -97,7 +96,7 @@ RequestResult MenuRequestHandler::joinRoom(RequestInfo info)
 		room.addUser(this->m_user);
 		joinRoomReponse = { successStatus };
 	}
-	catch (const std::exception&)
+	catch (const exception&)
 	{
 		joinRoomReponse = { roomIsFullStatus };
 	}

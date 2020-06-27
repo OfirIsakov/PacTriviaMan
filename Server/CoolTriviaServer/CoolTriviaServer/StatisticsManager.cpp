@@ -1,19 +1,30 @@
 #include "StatisticsManager.h"
 #include <exception>
 
+// Ctor
+StatisticsManager::StatisticsManager(IDatabase* m_database)
+{
+	this->m_database = m_database;
+}
+// Dtor
+StatisticsManager::~StatisticsManager()
+{
+	delete m_database;
+}
 
 // Function will return the statistics 
 // The syntax of the vector:
-// {user1:bestscore1, user2:bestscore2, user3:bestscore3, user4:bestscore4, user5:bestscore5, user1:numOfGames:TotalAnswers:TotalCorrectAnswers:AvgTimeForAnswer, ...}
+// {user1:bestscore1, user2:bestscore2, user3:bestscore3, user4:bestscore4, user5:bestscore5, currentuser:numOfGames:TotalAnswers:TotalCorrectAnswers:AvgTimeForAnswer}
 // If there are less than 5 users, the left spaces (from the top 5) will be "0"
 vector<string> StatisticsManager::getStatistics(string username)
 {
 	vector<string> topFive;
-	cout << "StatisticsManager - Before Get Top Five" << endl;
 	topFive = m_database->getTopFive();
-
 	topFive.push_back(getUserStats(username));
-
+	for (auto& a : topFive)
+	{
+		cout << a << endl;
+	}
 	return topFive; // Final vector
 }
 

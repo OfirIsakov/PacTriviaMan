@@ -88,7 +88,8 @@ vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(GetStatist
 			userStatsStr += res.statistics[i] + ","; // Separate the stats
 	}
 	userStatsStr += res.statistics[res.statistics.size() - 1];
-
+	std::cout << "UserStats: " << userStatsStr << std::endl;
+	std::cout << "High scores: " << highScoresStr << std::endl;
 	json getStatisticsJson = json{ { "UserStatistics", userStatsStr }, { "HighScores", highScoresStr } };
 	return createResponse(getStatisticsCode, getStatisticsJson.dump(), getStatisticsJson.dump().length());
 }

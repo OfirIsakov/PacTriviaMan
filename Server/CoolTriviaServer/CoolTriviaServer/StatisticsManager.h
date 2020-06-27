@@ -1,6 +1,5 @@
 #pragma once
 
-#include <sstream>
 #include "SqliteDataBase.h"
 
 using std::ostringstream;
@@ -8,6 +7,9 @@ using std::ostringstream;
 class StatisticsManager
 {
 public:
+
+	StatisticsManager(IDatabase* m_database);
+	~StatisticsManager();
 
 	vector<string> getStatistics(string username);
 

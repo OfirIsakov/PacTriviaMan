@@ -48,7 +48,11 @@ enum messageCodes
 	closeRoomCode = 10,
 	startGameCode = 11,
 	getRoomStateCode = 12,
-	leaveRoomCode = 13
+	leaveRoomCode = 13,
+	LeaveGameCode =  14,
+	GetQuestionCode = 15,
+	SubmitAnswerCode = 16,
+	GetGameResultCode = 17
 
 };
 

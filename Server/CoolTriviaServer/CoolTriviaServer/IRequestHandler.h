@@ -53,6 +53,11 @@ typedef struct CreateRoomRequest
 	unsigned int answerTimeout;
 } CreateRoomRequest;
 
+typedef struct SubmitAnswerRequest
+{
+	unsigned int answerId
+} SubmitAnswerRequest;
+
 class IRequestHandler
 {
 public:

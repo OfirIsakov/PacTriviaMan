@@ -6,7 +6,7 @@
 #include "Helper.h"
 
 // Communicator Constructor
-Communicator::Communicator(RequestHandlerFactory& handlerFactory): m_handlerFactory(handlerFactory)
+Communicator::Communicator(RequestHandlerFactory& handlerFactory) : m_handlerFactory(handlerFactory)
 {
 	// this server use TCP. that why SOCK_STREAM & IPPROTO_TCP
 	// if the server use UDP we will use: SOCK_DGRAM & IPPROTO_UDP
@@ -73,9 +73,8 @@ void Communicator::startHandleRequests()
 	if (client_socket == INVALID_SOCKET)
 		throw exception(__FUNCTION__);
 
-	cout << "Client accepted. Server and client can speak" << endl;
+	cout << "Client accepted. Server and client can speak. Connected socket: " << client_socket << endl;
 
-	
 	LoginRequestHandler* clientHandler = this->m_handlerFactory.createLoginRequestHandler();
 	this->m_clients.emplace(client_socket, clientHandler);
 	// the function that handle the conversation with the client
@@ -121,6 +120,36 @@ void Communicator::handleNewClient()
 
 			RequestResult result = currentHandler->handleRequest(info);
 
+			// this logic if for sending every user that a room started or closed
+			if (dynamic_cast<RoomAdminRequestHandler*>(currentHandler)) // check if the game started, and if yes send to all the users
+			{
+				if (((RoomAdminRequestHandler*)currentHandler)->getRoomState() == alreadyStartedRoom ||
+					((RoomAdminRequestHandler*)currentHandler)->getRoomState() == closedRoom) {
+					vector<string> users = ((RoomAdminRequestHandler*)currentHandler)->getAllUsersInRoom();
+					for (auto& it : this->m_clients) {
+						if (dynamic_cast<RoomMemberRequestHandler*>(it.second)) { // check if the user is in a waiting game state
+							string currUser = ((RoomMemberRequestHandler*)it.second)->getUser().getUsername();
+							for (auto& user : users) {
+								if (user == currUser) {
+									if (((RoomAdminRequestHandler*)currentHandler)->getRoomState() == alreadyStartedRoom) {
+										RequestResult tmpResult = ((RoomMemberRequestHandler*)it.second)->roomStarted();
+										delete it.second;
+										it.second = tmpResult.newHandler;
+										Helper::sendData(it.first, tmpResult.response);
+										break;
+									}
+									else if (((RoomAdminRequestHandler*)currentHandler)->getRoomState() == closedRoom) {
+										RequestResult tmpResult = ((RoomMemberRequestHandler*)it.second)->roomClosed();
+										Helper::sendData(it.first, tmpResult.response);
+										break;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
 			if (result.newHandler) {
 				delete currentHandler;
 				currentHandler = result.newHandler;
@@ -131,7 +160,6 @@ void Communicator::handleNewClient()
 					break;
 				}
 			}
-
 			Helper::sendData(clientSocket, result.response);
 
 			// clear the buffer
@@ -139,11 +167,23 @@ void Communicator::handleNewClient()
 			// free up the space so no leaks
 			delete[] code;
 			delete[] jsonLengthBytes;
-			delete[] rawJson;
+			if (strlen(rawJson) > 0) {
+				delete[] rawJson;
+			}
 		}
-		catch (const exception& e)
+		catch (const exception & e)
 		{
+			cout << "Error in socket: " << clientSocket << endl;
 			cout << e.what() << endl;
+			// remove it form the logged users
+			//TODORO add the check for all states except LoginRequestHandler
+			if (dynamic_cast<MenuRequestHandler*>(currentHandler) ||
+				dynamic_cast<RoomMemberRequestHandler*>(currentHandler) ||
+				dynamic_cast<RoomAdminRequestHandler*>(currentHandler)
+				)
+			{
+				this->m_handlerFactory.getLoginManager().logout(((MenuRequestHandler*)currentHandler)->getLoggedUser().getUsername());
+			}
 			// delete the client element from the map
 			for (auto it = this->m_clients.begin(); it != this->m_clients.end(); it++) {
 				if (it->first == clientSocket) {

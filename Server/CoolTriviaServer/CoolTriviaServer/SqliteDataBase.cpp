@@ -31,6 +31,7 @@ void SqliteDataBase::openDB()
 			changeDB(command);
 		}
 		insertQuestions = createInsertQuery();
+		cout << insertQuestions << endl;
 		changeDB(insertQuestions);
 	}
 }
@@ -44,7 +45,7 @@ string SqliteDataBase::createInsertQuery()
 		query += "( ";
 		for (int j = 0; j < NUM_OF_DETAILS; j++)
 		{
-			query += QUES_ANS[i][j];
+			query += "\"" + QUES_ANS[i][j] + "\"";
 			if (j != NUM_OF_DETAILS - 1) // Check is it the last element
 			{
 				query += ",";
@@ -77,7 +78,7 @@ int SqliteDataBase::changeDB(const string command) const
 	int res = sqlite3_exec(this->_db, command.c_str(), nullptr, nullptr, errMessage);
 	if (res != SQLITE_OK)
 	{
-		cout << errMessage << endl;
+		cout << "SQLITE error: " << errMessage << endl;
 		return -1;
 	}
 	return 0;
@@ -93,7 +94,7 @@ bool SqliteDataBase::doesUserExist(string username)
 	int res = sqlite3_exec(this->_db, getUsersCmd.c_str(), getIntCB, &usernames, &errMessage);
 	if (res != SQLITE_OK)
 	{
-		cout << errMessage << endl;
+		cout << "SQLITE error: " << errMessage << endl;
 		return true; // avoid to insert new user
 	}
 
@@ -109,7 +110,7 @@ bool SqliteDataBase::doesPasswordMatch(string username, string password)
 	int res = sqlite3_exec(this->_db, getUserPassCmd.c_str(), getStringCB, &userPassword, &errMessage);
 	if (res != SQLITE_OK)
 	{
-		cout << errMessage << endl;
+		cout << "SQLITE error: " << errMessage << endl;
 		return true;  // avoid to insert new user
 	}
 	return userPassword.compare(password) == 0;
@@ -120,7 +121,7 @@ void SqliteDataBase::addNewUser(string username, string passsword, string mail)
 {
 	if (doesUserExist(username))
 	{
-		throw CantCreateUserException();
+		throw UserAlreadyExistsException();
 	}
 	string addUserCmd = "INSERT INTO Users (username, password, mail) VALUES (\"" + username + "\", \"" + passsword + "\", \"" + mail + "\");";
 
@@ -138,10 +139,10 @@ int SqliteDataBase::getIntCB(void* data, int argc, char** argv, char** azColName
 	return 0;
 }
 
-// Function is a callback that order the usernames
+// Function is a callback that return string
 int SqliteDataBase::getStringCB(void* data, int argc, char** argv, char** azColName)
 {
-	string* str = reinterpret_cast<string*>(data);
+	string* str = static_cast<string*>(data);
 	if (argc > 0)
 		*str = argv[0];
 	else
@@ -152,62 +153,64 @@ int SqliteDataBase::getStringCB(void* data, int argc, char** argv, char** azColN
 // Function will return the average answer time of the user
 float SqliteDataBase::getPlayerAverageAnswerTime(string username)
 {
-	string getAvgTimesCmd = "SELECT AVG(answer_time) FROM Data WHERE username = \"" + username + "\";";
-	string avgStr = "";
+	string getAvgTimesCmd = "SELECT AVG(answer_time) FROM Data WHERE username = \"" + username + "\" GROUP BY answer_time HAVING COUNT(*) > 1;";
+	string avgStr = "0";
 	char* errMessage;
+
 	int res = sqlite3_exec(this->_db, getAvgTimesCmd.c_str(), getStringCB, &avgStr, &errMessage);
 	if (res != SQLITE_OK)
 	{
-		cout << errMessage << endl;
+		cout << "SQLITE error: " << errMessage << endl;
 		return ERROR;
 	}
+	
 	return stof(avgStr);
 }
 
 // Function will return number of correct answers of the user
 int SqliteDataBase::getNumOfCorrectAnswers(string username)
 {
-	string getCorrectAnsCmd = "SELECT question_id FROM Data WHERE username = \"" + username + "\" AND is_correct = 1;";
-	vector<int>* correctAnswers;
+	string getCorrectAnsCmd = "SELECT COUNT(question_id) FROM Data WHERE username = \"" + username + "\" AND is_correct = 1;";
+	int correctAnswers = 0;
 	char* errMessage;
-	int res = sqlite3_exec(this->_db, getCorrectAnsCmd.c_str(), getIntVectorCB, &correctAnswers, &errMessage);
+	int res = sqlite3_exec(this->_db, getCorrectAnsCmd.c_str(), getIntCB, &correctAnswers, &errMessage);
 	if (res != SQLITE_OK)
 	{
-		cout << errMessage << endl;
+		cout << "SQLITE error: " << errMessage << endl;
 		return ERROR;
 	}
-	return correctAnswers->size();
+	return correctAnswers;
 }
 
 // Function will return the number of total answers of the user
 int SqliteDataBase::getNumOfTotalAnswers(string username)
 {
 	string getAnswersCmd = "SELECT question_id FROM Data WHERE username = \"" + username + "\";";
-	vector<int>* answers;
+	vector<int> answers;
 	char* errMessage;
 	int res = sqlite3_exec(this->_db, getAnswersCmd.c_str(), getIntVectorCB, &answers, &errMessage);
 	if (res != SQLITE_OK)
 	{
-		cout << errMessage << endl;
+		cout << "SQLITE error: " << errMessage << endl;
 		return ERROR;
 	}
-	return answers->size();
+	return answers.size();
 }
 
 // Function will return the number of games that the user took part in
 int SqliteDataBase::getNumOfPlayerGames(string username)
 {
-	string getGamesCmd = "SELECT game_id FROM Data WHERE username = \"" + username + "\" ORDER BY game_id ASC;";
-	vector<int> games;
+	string getGamesCmd = "SELECT DISTINCT COUNT(game_id) FROM Data WHERE username = \"" + username + "\";";
+	int games = 0;
 	char* errMessage;
-	int res = sqlite3_exec(this->_db, getGamesCmd.c_str(), getIntVectorCB, &games, &errMessage);
+	int res = sqlite3_exec(this->_db, getGamesCmd.c_str(), getIntCB, &games, &errMessage);
 	if (res != SQLITE_OK)
 	{
-		cout << errMessage << endl;
+		cout << "SQLITE error: " << errMessage << endl;
 		return ERROR;
 	}
 
-	return set<int>(games.begin(), games.end()).size(); // ignore the duplicates
+	return games;
 }
 
 // Function is a callback that return Vector of int by the command
@@ -223,15 +226,15 @@ int SqliteDataBase::getIntVectorCB(void* data, int argc, char** argv, char** azC
 }
 
 // Function will return all the users
-vector<string> SqliteDataBase::getUsernames()
+vector<string> SqliteDataBase::getTopUsernames()
 {
-	string getUsersCmd = "SELECT username FROM Users";
+	string getUsersCmd = "SELECT username FROM Data GROUP BY username ORDER BY SUM(is_correct) DESC LIMIT 5;";
 	vector<string> usernames;
 	char* errMessage;
 	int res = sqlite3_exec(this->_db, getUsersCmd.c_str(), getStringVectorCB, &usernames, &errMessage);
 	if (res != SQLITE_OK)
 	{
-		cout << errMessage << endl;
+		cout << "SQLITE error: " << errMessage << endl;
 		return vector<string>();
 	}
 	return usernames;
@@ -251,28 +254,17 @@ int SqliteDataBase::getStringVectorCB(void* data, int argc, char** argv, char** 
 // Function will return the top 5 players with the highest score 
 vector<string> SqliteDataBase::getTopFive()
 {
-	int res, counter = 0;
-	char* errMessage;
-	vector<string> usernames = getUsernames(), result;
-	map<int, string> resultMap;
-	// Get the scores
-	for (auto& username : usernames)
-	{
-		resultMap.insert(pair<int, string>(getNumOfCorrectAnswers(username), username));
-	}
-	// Keep the top 5
-	map<int, string>::iterator it = resultMap.begin();
-	int len = resultMap.size();
-	for (int i = 0; i < len - 5; i++) {
-		resultMap.erase(it);
-		it = resultMap.begin();
-	}
-	// Parse the map to vector
-	for (int i = 0; i < 5; i++)
-	{
-		result.push_back(it->second + ":" + to_string(it->first));
-		it++;
-	}
+	int counter = 0;
+	vector<string> usernames = getTopUsernames();
 
-	return result;
+	for (int i = 0; i < usernames.size(); i++)
+	{
+		usernames[i] += ":" + to_string(this->getNumOfCorrectAnswers(usernames[i]));
+		counter++;
+	}
+	for (int i = counter; i < 5; i++)
+	{
+		usernames[i] = ":0";
+	}
+	return usernames;
 }

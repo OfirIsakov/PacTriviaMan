@@ -40,7 +40,12 @@ vector<string> Room::getAllUsers()
 	return userNames;
 }
 
-RoomData Room::GetData()
+RoomData Room::getData()
 {
 	return this->m_metadata;
+}
+
+void Room::setData(RoomData metadata)
+{
+	this->m_metadata = metadata;
 }

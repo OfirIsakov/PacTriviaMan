@@ -28,9 +28,9 @@ const string QUES_ANS[NUM_OF_Q][NUM_OF_DETAILS] = { {"Ques1", "correct_Ans1", "a
 													{"Ques9", "correct_Ans9", "ans1-9", "ans2-9", "ans3-9"},
 													{"Ques10", "correct_Ans10", "ans1-10", "ans2-10", "ans3-10"} };
 
-const string SET_DB[NUM_OF_COMMANDS] = { "CREATE TABLE Users (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, username text NOT NULL, password text NOT NULL, mail text NOT NULL);",
+const string SET_DB[NUM_OF_COMMANDS] = { "CREATE TABLE Users (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, username text NOT NULL UNIQUE, password text NOT NULL, mail text NOT NULL);",
 										 "CREATE TABLE Questions (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, question text NOT NULL, correct_ans text NOT NULL, ans1 text NOT NULL, ans2 text NOT NULL, ans3 text NOT NULL);",
-										 "CREATE TABLE Games (id integer NOT NULL PRIMARY KEY AUTOINCREMENT, status integer NOT NULL, start_time	DATETIME NOT NULL, end_time	DATETIME);",
+										 "CREATE TABLE Games (id integer NOT NULL PRIMARY KEY AUTOINCREMENT, status integer NOT NULL, start_time DATETIME NOT NULL, end_time DATETIME);",
 										 "CREATE TABLE Data (game_id integer NOT NULL, username text NOT NULL, question_id integer NOT NULL, player_answer text NOT NULL, is_correct integer NOT NULL, answer_time integer NOT NULL, PRIMARY KEY(game_id,username,question_id), FOREIGN KEY(game_id) REFERENCES Games(id), FOREIGN KEY(username) REFERENCES Users(username), FOREIGN KEY(question_id) REFERENCES Questions(id));" };
 
 // message codes
@@ -44,7 +44,12 @@ enum messageCodes
 	getPlayersInRoomCode = 6,
 	joinRoomCode = 7,
 	getStatisticsCode = 8,
-	logoutCode = 9
+	logoutCode = 9,
+	closeRoomCode = 10,
+	startGameCode = 11,
+	getRoomStateCode = 12,
+	leaveRoomCode = 13
+
 };
 
 // answer statuses
@@ -53,14 +58,16 @@ enum answerStatuses
 	successStatus = 1,
 	wrongDataStatus = 2,
 	alreadyConnectedStatus = 3,
-	roomIsFullStatus = 4
+	roomIsFullStatus = 4,
+	userExists = 5,
 };
 
 // room states
 enum roomStates
 {
 	waitingForPlayersRoom = 1,
-	alreadyStartedRoom = 2
+	alreadyStartedRoom = 2,
+	closedRoom = 3
 };
 
 // protocol consts

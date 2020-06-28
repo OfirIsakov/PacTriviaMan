@@ -27,7 +27,6 @@ void serverServe()
 {
 	try
 	{
-		std::cout << "Get into Serve!";
 		WSAInitializer wsaInit;
 		Server myServer;
 		myServer.run();

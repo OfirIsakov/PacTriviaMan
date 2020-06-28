@@ -11,6 +11,7 @@ typedef struct RoomData
 	int maxPlayers;
 	unsigned int timePerQuestion;
 	unsigned int isActive;
+	unsigned int numOfQuestionsInGame;
 } RoomData;
 
 using std::vector;
@@ -30,7 +31,10 @@ public:
 	vector<string> getAllUsers();
 
 	// getters
-	RoomData GetData();
+	RoomData getData();
+
+	// setters
+	void setData(RoomData metadata);
 
 };
 

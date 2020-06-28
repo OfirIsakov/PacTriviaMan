@@ -16,6 +16,7 @@ RequestResult LoginRequestHandler::handleRequest(RequestInfo info)
 	vector<unsigned char> answer;
 	ErrorResponse errorReponse;
 
+	std::cout << "code: " << info.id << std::endl;
 	switch (info.id)
 	{
 	case signupCode:
@@ -49,6 +50,10 @@ RequestResult LoginRequestHandler::signup(RequestInfo info)
 		this->m_loginManager.signup(signupRequest.username, signupRequest.password, signupRequest.mail);
 		signupReponse = { successStatus };
 	}
+	catch (const UserAlreadyExistsException&)
+	{
+		signupReponse = { userExists };
+	}
 	catch (const exception&)
 	{
 		signupReponse = { wrongDataStatus };
@@ -73,7 +78,7 @@ RequestResult LoginRequestHandler::login(RequestInfo info)
 	try
 	{
 		this->m_loginManager.login(loginRequest.username, loginRequest.password);
-		handler = m_handlerFactory.createMenuRequestHandler(loginRequest.username);
+		handler = m_handlerFactory.createMenuRequestHandler(LoggedUser(loginRequest.username));
 		loginReponse = { successStatus };
 	}
 	catch (const AlreadyLoggedInException&)

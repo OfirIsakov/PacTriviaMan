@@ -102,7 +102,7 @@ RequestResult MenuRequestHandler::joinRoom(RequestInfo info)
 		joinRoomReponse = { roomIsFullStatus };
 	}
 
-	handler = nullptr; //TODORO the handler needs to be changed to "in room handler"
+	handler = this->m_handlerFactory.createRoomMemberRequestHandler(this->m_roomManager.getRoom(joinRoomRequest.roomId), this->getLoggedUser());
 
 	// serialize new answer
 	answer = JsonResponsePacketSerializer::serializeResponse(joinRoomReponse);
@@ -129,7 +129,7 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo info)
 	this->m_roomManager.createRoom(this->m_user, data);
 	createRoomReponse = { successStatus };
 
-	handler = nullptr; //TODORO the handler needs to be changed to "in room handler"
+	handler = this->m_handlerFactory.createRoomAdminRequestHandler(this->m_roomManager.getRoom(id), this->getLoggedUser());
 
 	// serialize new answer
 	answer = JsonResponsePacketSerializer::serializeResponse(createRoomReponse);

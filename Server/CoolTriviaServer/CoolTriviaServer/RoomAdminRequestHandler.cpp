@@ -8,7 +8,7 @@ RequestResult RoomAdminRequestHandler::closeRoom(RequestInfo info)
 
 	this->m_roomManager.setRoomState(this->m_room.getData().id, closedRoom);
 
-	handler = m_handlerFactory.createMenuRequestHandler(this->m_user.getUsername());
+	handler = m_handlerFactory.createMenuRequestHandler(this->m_user);
 
 	// serialize new answer
 	answer = JsonResponsePacketSerializer::serializeResponse(closeRoomReponse);

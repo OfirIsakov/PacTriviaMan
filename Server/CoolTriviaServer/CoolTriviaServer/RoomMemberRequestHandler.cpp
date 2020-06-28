@@ -6,7 +6,7 @@ RequestResult RoomMemberRequestHandler::leaveRoom(RequestInfo info)
 	vector<unsigned char> answer;
 	LeaveRoomResponse leaveRoomReponse = { successStatus };
 
-	handler = this->m_handlerFactory.createMenuRequestHandler(this->m_user.getUsername());
+	handler = this->m_handlerFactory.createMenuRequestHandler(this->m_user);
 
 	// serialize new answer
 	answer = JsonResponsePacketSerializer::serializeResponse(leaveRoomReponse);

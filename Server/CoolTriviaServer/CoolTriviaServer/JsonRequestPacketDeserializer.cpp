@@ -48,7 +48,7 @@ CreateRoomRequest JsonRequestPacketDeserializer::deserializeCreateRoomRequest(ve
 	return request;
 }
 
-SubmitAnswerRequest JsonRequestPacketDeserializer::deserializerSubmitAnswerRequest(vector<unsigned char> Buffer)
+SubmitAnswerRequest JsonRequestPacketDeserializer::deserializeSubmitAnswerRequest(vector<unsigned char> Buffer)
 {
 	json messageInfo = json::parse(Buffer.begin(), Buffer.end());
 

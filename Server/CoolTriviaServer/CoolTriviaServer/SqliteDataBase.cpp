@@ -226,9 +226,9 @@ int SqliteDataBase::getIntVectorCB(void* data, int argc, char** argv, char** azC
 }
 
 // Function will return all the users
-vector<string> SqliteDataBase::getUsernames()
+vector<string> SqliteDataBase::getTopUsernames()
 {
-	string getUsersCmd = "SELECT username FROM Users";
+	string getUsersCmd = "SELECT username FROM Data GROUP BY username ORDER BY SUM(is_correct) DESC LIMIT 5;";
 	vector<string> usernames;
 	char* errMessage;
 	int res = sqlite3_exec(this->_db, getUsersCmd.c_str(), getStringVectorCB, &usernames, &errMessage);
@@ -255,32 +255,16 @@ int SqliteDataBase::getStringVectorCB(void* data, int argc, char** argv, char** 
 vector<string> SqliteDataBase::getTopFive()
 {
 	int counter = 0;
+	vector<string> usernames = getTopUsernames();
 
-	vector<string> usernames = getUsernames(), result;
-	map<int, string> resultMap;
-	map<int, string>::iterator it = resultMap.begin();
-	// Get the scores
-	for (auto& username : usernames)
+	for (int i = 0; i < usernames.size(); i++)
 	{
-		resultMap.insert(it ,pair<int, string>(getNumOfCorrectAnswers(username), username));
+		usernames[i] += ":" + to_string(this->getNumOfCorrectAnswers(usernames[i]));
+		counter++;
 	}
-	// Keep the top 5
-	it = resultMap.begin();
-	int len = resultMap.size();
-	for (int i = 0; i < len - 5; i++) {
-		resultMap.erase(it);
-		it = resultMap.begin();
-	}
-	// Parse the map to vector
-	for (auto& it : resultMap)
+	for (int i = counter; i < 5; i++)
 	{
-		result.push_back(it.second + ":" + to_string(it.first));
+		usernames[i] = ":0";
 	}
-	reverse(result.begin(), result.end()); // reverse the results because its from lower to biggest
-	while (result.size() < 5) // In case that there are less than 5 players
-	{
-		result.push_back(":0");
-	}
-
-	return result;
+	return usernames;
 }

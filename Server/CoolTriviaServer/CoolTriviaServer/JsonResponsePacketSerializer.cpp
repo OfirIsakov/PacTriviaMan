@@ -38,10 +38,10 @@ vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(GetRoomsRe
 	string roomsStr = "";
 	for (int i = 0; i < res.rooms.size() - 1; i++)
 	{
-		roomsStr += res.rooms[i].name;
+		roomsStr += res.rooms[i].name + ":" + to_string(res.rooms[i].id);
 		if (i != res.rooms.size() - 1)
 		{
-			roomsStr += ", ";
+			roomsStr += ",";
 		}
 	}
 	json getRoomJson = json{ { "Rooms", roomsStr } };

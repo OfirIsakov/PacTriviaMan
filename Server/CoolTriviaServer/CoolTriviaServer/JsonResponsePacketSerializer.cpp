@@ -82,10 +82,9 @@ vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(GetStatist
 	string userStatsStr = "", highScoresStr = "";
 	for (int i = 0; i < res.statistics.size() - 1; i++)
 	{
-		if (i < 5)
-			highScoresStr += res.statistics[i] + ","; // Separate the scores
-		else
-			userStatsStr += res.statistics[i] + ","; // Separate the stats
+		highScoresStr += res.statistics[i];
+		if (i < 4)
+			highScoresStr += ","; // Separate the scores
 	}
 	userStatsStr += res.statistics[res.statistics.size() - 1];
 	std::cout << "UserStats: " << userStatsStr << std::endl;

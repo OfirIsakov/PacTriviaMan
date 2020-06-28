@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <set>
+#include <algorithm>
 #include <map>
 #include "IDatabase.h"
 #include "CantCreateUserException.h"
@@ -21,6 +22,7 @@ using std::stof;
 using std::set;
 using std::map;
 using std::pair;
+using std::reverse;
 
 class SqliteDataBase : public IDatabase
 {

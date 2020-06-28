@@ -139,7 +139,9 @@ void Communicator::handleNewClient()
 			// free up the space so no leaks
 			delete[] code;
 			delete[] jsonLengthBytes;
-			delete[] rawJson;
+			if (strlen(rawJson) > 0) {
+				delete[] rawJson;
+			}
 		}
 		catch (const exception& e)
 		{

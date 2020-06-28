@@ -264,7 +264,7 @@ vector<string> SqliteDataBase::getTopFive()
 	}
 	for (int i = counter; i < 5; i++)
 	{
-		usernames[i] = ":0";
+		usernames.push_back(":0");
 	}
 	return usernames;
 }

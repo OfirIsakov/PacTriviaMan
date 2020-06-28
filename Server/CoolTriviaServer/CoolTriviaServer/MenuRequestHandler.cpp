@@ -125,7 +125,7 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo info)
 	int maxPlayers = createRoomRequest.maxUsers;
 	unsigned int timePerQuestion = createRoomRequest.answerTimeout;
 	unsigned int isActive = waitingForPlayersRoom;
-	RoomData data = { id, name, maxPlayers, timePerQuestion ,isActive };
+	RoomData data = { id, name, maxPlayers, timePerQuestion ,isActive , createRoomRequest.questionCount };
 	this->m_roomManager.createRoom(this->m_user, data);
 	createRoomReponse = { successStatus };
 

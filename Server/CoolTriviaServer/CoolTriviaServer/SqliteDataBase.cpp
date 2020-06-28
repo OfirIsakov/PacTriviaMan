@@ -121,7 +121,7 @@ void SqliteDataBase::addNewUser(string username, string passsword, string mail)
 {
 	if (doesUserExist(username))
 	{
-		throw CantCreateUserException();
+		throw UserAlreadyExistsException();
 	}
 	string addUserCmd = "INSERT INTO Users (username, password, mail) VALUES (\"" + username + "\", \"" + passsword + "\", \"" + mail + "\");";
 

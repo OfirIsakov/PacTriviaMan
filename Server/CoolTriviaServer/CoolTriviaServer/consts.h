@@ -58,14 +58,16 @@ enum answerStatuses
 	successStatus = 1,
 	wrongDataStatus = 2,
 	alreadyConnectedStatus = 3,
-	roomIsFullStatus = 4
+	roomIsFullStatus = 4,
+	userExists = 5,
 };
 
 // room states
 enum roomStates
 {
 	waitingForPlayersRoom = 1,
-	alreadyStartedRoom = 2
+	alreadyStartedRoom = 2,
+	closedRoom = 3
 };
 
 // protocol consts

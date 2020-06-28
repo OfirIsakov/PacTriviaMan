@@ -50,6 +50,10 @@ RequestResult LoginRequestHandler::signup(RequestInfo info)
 		this->m_loginManager.signup(signupRequest.username, signupRequest.password, signupRequest.mail);
 		signupReponse = { successStatus };
 	}
+	catch (const UserAlreadyExistsException&)
+	{
+		signupReponse = { userExists };
+	}
 	catch (const exception&)
 	{
 		signupReponse = { wrongDataStatus };

@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <map>
 #include "IDatabase.h"
-#include "CantCreateUserException.h"
+#include "UserAlreadyExistsException.h"
 #include "sqlite3.h"
 #include "consts.h"
 

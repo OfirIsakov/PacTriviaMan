@@ -30,8 +30,8 @@ public:
 	// states generators
 	LoginRequestHandler* createLoginRequestHandler();
 	MenuRequestHandler* createMenuRequestHandler(string username);
-	RoomAdminRequestHandler* createRoomAdminRequestHandler();
-	RoomMemberRequestHandler* createRoomMemberRequestHandler();
+	RoomAdminRequestHandler* createRoomAdminRequestHandler(Room room, string username);
+	RoomMemberRequestHandler* createRoomMemberRequestHandler(Room room, string username);
 
 	StatisticsManager& getStatisticsManager();
 	RoomManager& getRoomManager();

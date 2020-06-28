@@ -24,5 +24,11 @@ public:
 
 	bool isRequestRelevant(RequestInfo info);
 	RequestResult handleRequest(RequestInfo info);
+
+	RequestResult roomClosed(); // indicates the room got closed and makes response to the client
+	RequestResult roomStarted(); // indicates the room has started and makes response to the client
+
+	// getters
+	LoggedUser getUser();
 };
 

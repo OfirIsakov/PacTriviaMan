@@ -66,7 +66,8 @@ enum answerStatuses
 enum roomStates
 {
 	waitingForPlayersRoom = 1,
-	alreadyStartedRoom = 2
+	alreadyStartedRoom = 2,
+	closedRoom = 3
 };
 
 // protocol consts

@@ -21,16 +21,16 @@ MenuRequestHandler* RequestHandlerFactory::createMenuRequestHandler(string usern
 	return new MenuRequestHandler(*this, LoggedUser(username));
 }
 
-RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler()
+RoomAdminRequestHandler* RequestHandlerFactory::createRoomAdminRequestHandler(Room room, string username)
 {
 
-	return new RoomAdminRequestHandler(*this);
+	return new RoomAdminRequestHandler(*this, room, LoggedUser(username));
 }
 
-RoomMemberRequestHandler* RequestHandlerFactory::createRoomMemberRequestHandler()
+RoomMemberRequestHandler* RequestHandlerFactory::createRoomMemberRequestHandler(Room room, string username)
 {
 
-	return new RoomMemberRequestHandler(*this);
+	return new RoomMemberRequestHandler(*this, room, LoggedUser(username));
 }
 
 StatisticsManager& RequestHandlerFactory::getStatisticsManager()

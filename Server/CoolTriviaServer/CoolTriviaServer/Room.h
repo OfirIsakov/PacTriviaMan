@@ -31,7 +31,10 @@ public:
 	vector<string> getAllUsers();
 
 	// getters
-	RoomData GetData();
+	RoomData getData();
+
+	// setters
+	void setData(RoomData metadata);
 
 };
 

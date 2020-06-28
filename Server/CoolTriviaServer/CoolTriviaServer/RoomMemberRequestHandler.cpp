@@ -6,7 +6,7 @@ RequestResult RoomMemberRequestHandler::leaveRoom(RequestInfo info)
 	vector<unsigned char> answer;
 	LeaveRoomResponse leaveRoomReponse = { successStatus };
 
-	handler = m_handlerFactory.createMenuRequestHandler(this->m_user.getUsername());
+	handler = this->m_handlerFactory.createMenuRequestHandler(this->m_user.getUsername());
 
 	// serialize new answer
 	answer = JsonResponsePacketSerializer::serializeResponse(leaveRoomReponse);
@@ -21,9 +21,9 @@ RequestResult RoomMemberRequestHandler::getRoomState(RequestInfo info)
 	IRequestHandler* handler;
 	vector<unsigned char> answer;
 	GetRoomStateResponse roomStateReponse;
-	RoomData data = this->m_room.GetData();
+	RoomData data = this->m_room.getData();
 
-	roomStateReponse = { successStatus, data.isActive, this->m_room.getAllUsers(), data.numOfQuestionsInGame, data.timePerQuestion };
+	roomStateReponse = { successStatus, data.isActive == alreadyStartedRoom, this->m_room.getAllUsers(), data.numOfQuestionsInGame, data.timePerQuestion };
 
 	handler = nullptr;
 
@@ -80,5 +80,40 @@ RequestResult RoomMemberRequestHandler::handleRequest(RequestInfo info)
 		answer = JsonResponsePacketSerializer::serializeResponse(errorReponse);
 		result = { answer , nextHandler };
 	}
+	return result;
+}
+
+LoggedUser RoomMemberRequestHandler::getUser()
+{
+	return this->m_user;
+}
+
+RequestResult RoomMemberRequestHandler::roomClosed()
+{
+	IRequestHandler* handler;
+	vector<unsigned char> answer;
+	CloseRoomResponse closeRoomReponse = { successStatus };
+
+	handler = nullptr;
+
+	// serialize new answer
+	answer = JsonResponsePacketSerializer::serializeResponse(closeRoomReponse);
+
+	RequestResult result = { answer, handler };
+	return result;
+}
+
+RequestResult RoomMemberRequestHandler::roomStarted()
+{
+	IRequestHandler* handler;
+	vector<unsigned char> answer;
+	CloseRoomResponse closeRoomReponse = { successStatus };
+
+	handler = nullptr; //TODORO the handle needs to be in game handle
+
+	// serialize new answer
+	answer = JsonResponsePacketSerializer::serializeResponse(closeRoomReponse);
+
+	RequestResult result = { answer, handler };
 	return result;
 }

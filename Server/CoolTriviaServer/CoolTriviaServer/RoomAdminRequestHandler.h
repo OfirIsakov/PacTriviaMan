@@ -25,5 +25,9 @@ public:
 
 	bool isRequestRelevant(RequestInfo info);
 	RequestResult handleRequest(RequestInfo info);
+
+	//getters
+	int getRoomState();
+	vector<string> getAllUsersInRoom();
 };
 

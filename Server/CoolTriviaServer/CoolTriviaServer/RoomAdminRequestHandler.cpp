@@ -4,20 +4,15 @@ RequestResult RoomAdminRequestHandler::closeRoom(RequestInfo info)
 {
 	IRequestHandler* handler;
 	vector<unsigned char> answer;
-	CloseRoomResponse closeRoomReponse;
-	LeaveRoomResponse leaveRoomReponse = { successStatus };
+	CloseRoomResponse closeRoomReponse = { successStatus };
 
-	for (auto& user : this->m_room.getAllUsers())
-	{
-		//TODORO send the leaveRoomReponse to all the users
-	}
-	closeRoomReponse = { successStatus };
+	this->m_roomManager.setRoomState(this->m_room.getData().id, closedRoom);
 
 	handler = m_handlerFactory.createMenuRequestHandler(this->m_user.getUsername());
 
 	// serialize new answer
 	answer = JsonResponsePacketSerializer::serializeResponse(closeRoomReponse);
-
+	
 	RequestResult result = { answer, handler };
 	return result;
 }
@@ -28,12 +23,9 @@ RequestResult RoomAdminRequestHandler::startGame(RequestInfo info)
 	vector<unsigned char> answer;
 	StartGameResponse startRoomReponse = { successStatus };
 
-	for (auto& user : this->m_room.getAllUsers())
-	{
-		//TODORO send the startRoomReponse to all the users
-	}
+	this->m_roomManager.setRoomState(this->m_room.getData().id, alreadyStartedRoom);
 
-	handler = nullptr; //TODORO  the handle needs to be in game handle
+	handler = nullptr; //TODORO the handle needs to be in game handle
 
 	// serialize new answer
 	answer = JsonResponsePacketSerializer::serializeResponse(startRoomReponse);
@@ -47,9 +39,9 @@ RequestResult RoomAdminRequestHandler::getRoomState(RequestInfo info)
 	IRequestHandler* handler;
 	vector<unsigned char> answer;
 	GetRoomStateResponse roomStateReponse;
-	RoomData data = this->m_room.GetData();
+	RoomData data = this->m_room.getData();
 
-	roomStateReponse = {successStatus, data.isActive, this->m_room.getAllUsers(), data.numOfQuestionsInGame, data.timePerQuestion};
+	roomStateReponse = {successStatus, data.isActive == alreadyStartedRoom, this->m_room.getAllUsers(), data.numOfQuestionsInGame, data.timePerQuestion};
 
 	handler = nullptr;
 
@@ -111,4 +103,14 @@ RequestResult RoomAdminRequestHandler::handleRequest(RequestInfo info)
 		result = { answer , nextHandler };
 	}
 	return result;
+}
+
+int RoomAdminRequestHandler::getRoomState()
+{
+	return this->m_room.getData().isActive;
+}
+
+vector<string> RoomAdminRequestHandler::getAllUsersInRoom()
+{
+	return this->m_room.getAllUsers();
 }

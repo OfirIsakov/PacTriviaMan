@@ -78,7 +78,7 @@ RequestResult LoginRequestHandler::login(RequestInfo info)
 	try
 	{
 		this->m_loginManager.login(loginRequest.username, loginRequest.password);
-		handler = m_handlerFactory.createMenuRequestHandler(loginRequest.username);
+		handler = m_handlerFactory.createMenuRequestHandler(LoggedUser(loginRequest.username));
 		loginReponse = { successStatus };
 	}
 	catch (const AlreadyLoggedInException&)

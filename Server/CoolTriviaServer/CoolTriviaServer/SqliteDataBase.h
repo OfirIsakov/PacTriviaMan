@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <set>
+#include <algorithm>
 #include <map>
 #include "IDatabase.h"
 #include "UserAlreadyExistsException.h"
@@ -21,6 +22,7 @@ using std::stof;
 using std::set;
 using std::map;
 using std::pair;
+using std::reverse;
 
 class SqliteDataBase : public IDatabase
 {
@@ -36,7 +38,7 @@ public:
 	virtual int getNumOfCorrectAnswers(string username);
 	virtual int getNumOfTotalAnswers(string username);
 	virtual int getNumOfPlayerGames(string username);
-	virtual vector<string> getUsernames();
+	virtual vector<string> getTopUsernames();
 	virtual vector<string> getTopFive();
 
 private:

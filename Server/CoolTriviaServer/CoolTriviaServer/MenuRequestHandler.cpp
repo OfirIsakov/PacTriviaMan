@@ -12,9 +12,10 @@ RequestResult MenuRequestHandler::signout(RequestInfo info)
 	{
 		room.removeUser(this->m_user);
 	}
+	this->m_handlerFactory.getLoginManager().logout(this->m_user.getUsername());
 	logoutReponse = { successStatus };
 
-	handler = nullptr; //TODO the handler may need to be changed in the future
+	handler = m_handlerFactory.createLoginRequestHandler();
 
 	// serialize new answer
 	answer = JsonResponsePacketSerializer::serializeResponse(logoutReponse);
@@ -33,7 +34,7 @@ RequestResult MenuRequestHandler::getRooms(RequestInfo info)
 	rooms = this->m_roomManager.getRoomsData();
 	getRoomsReponse = { successStatus, rooms };
 
-	handler = nullptr; //TODO the handler may need to be changed in the future
+	handler = nullptr;
 
 	// serialize new answer
 	answer = JsonResponsePacketSerializer::serializeResponse(getRoomsReponse);
@@ -53,7 +54,7 @@ RequestResult MenuRequestHandler::getPlayersInRoom(RequestInfo info)
 	Room room = this->m_roomManager.getRoom(playersInRoomRequest.roomId);
 	getRoomsReponse = { room.getAllUsers() };
 
-	handler = nullptr; //TODO the handler may need to be changed in the future
+	handler = nullptr;
 
 	// serialize new answer
 	answer = JsonResponsePacketSerializer::serializeResponse(getRoomsReponse);
@@ -68,10 +69,9 @@ RequestResult MenuRequestHandler::getStatistics(RequestInfo info)
 	vector<unsigned char> answer;
 	GetStatisticsResponse getStatisticsReponse;
 
+	getStatisticsReponse = { successStatus, this->m_statisticsManager.getStatistics(m_user.getUsername()) };
 
-	getStatisticsReponse = { successStatus, this->m_statisticsManager.getStatistics() };
-
-	handler = nullptr; //TODO the handler may need to be changed in the future
+	handler = nullptr;
 
 	// serialize new answer
 	answer = JsonResponsePacketSerializer::serializeResponse(getStatisticsReponse);
@@ -97,12 +97,12 @@ RequestResult MenuRequestHandler::joinRoom(RequestInfo info)
 		room.addUser(this->m_user);
 		joinRoomReponse = { successStatus };
 	}
-	catch (const std::exception&)
+	catch (const exception&)
 	{
 		joinRoomReponse = { roomIsFullStatus };
 	}
 
-	handler = nullptr; //TODO the handler may need to be changed in the future
+	handler = nullptr; //TODORO the handler needs to be changed to "in room handler"
 
 	// serialize new answer
 	answer = JsonResponsePacketSerializer::serializeResponse(joinRoomReponse);
@@ -118,15 +118,7 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo info)
 	CreateRoomResponse createRoomReponse;
 	CreateRoomRequest createRoomRequest;
 
-	try
-	{
-		createRoomRequest = JsonRequestPacketDeserializer::deserializeCreateRoomRequest(info.buffer); // deserialize the buffer
-	}
-	catch (const std::exception&)
-	{
-		//TODO see deserializeCreateRoomRequest for info
-		// return error?
-	}
+	createRoomRequest = JsonRequestPacketDeserializer::deserializeCreateRoomRequest(info.buffer); // deserialize the buffer
 
 	int id = this->m_roomManager.getRoomsData().rbegin()->id;
 	string name = createRoomRequest.roomName;
@@ -137,7 +129,7 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo info)
 	this->m_roomManager.createRoom(this->m_user, data);
 	createRoomReponse = { successStatus };
 
-	handler = nullptr; //TODO the handler may need to be changed in the future
+	handler = nullptr; //TODORO the handler needs to be changed to "in room handler"
 
 	// serialize new answer
 	answer = JsonResponsePacketSerializer::serializeResponse(createRoomReponse);
@@ -215,4 +207,9 @@ RequestResult MenuRequestHandler::handleRequest(RequestInfo info)
 		result = { answer , nextHandler };
 	}
 	return result;
+}
+
+LoggedUser MenuRequestHandler::getLoggedUser()
+{
+	return this->m_user;
 }

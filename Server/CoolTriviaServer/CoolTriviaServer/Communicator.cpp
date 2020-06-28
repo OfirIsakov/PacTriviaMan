@@ -75,7 +75,6 @@ void Communicator::startHandleRequests()
 
 	cout << "Client accepted. Server and client can speak. Connected socket: " << client_socket << endl;
 
-
 	LoginRequestHandler* clientHandler = this->m_handlerFactory.createLoginRequestHandler();
 	this->m_clients.emplace(client_socket, clientHandler);
 	// the function that handle the conversation with the client
@@ -168,12 +167,20 @@ void Communicator::handleNewClient()
 			// free up the space so no leaks
 			delete[] code;
 			delete[] jsonLengthBytes;
-			delete[] rawJson;
+			if (strlen(rawJson) > 0) {
+				delete[] rawJson;
+			}
 		}
 		catch (const exception & e)
 		{
 			cout << "Error in socket: " << clientSocket << endl;
 			cout << e.what() << endl;
+			// remove it form the logged users
+			if (dynamic_cast<MenuRequestHandler*>(currentHandler))
+			{
+				this->m_handlerFactory.getLoginManager().logout(((MenuRequestHandler*)currentHandler)->getLoggedUser().getUsername());
+			}
+			//TODORO add the check for all states except LoginRequestHandler
 			// delete the client element from the map
 			for (auto it = this->m_clients.begin(); it != this->m_clients.end(); it++) {
 				if (it->first == clientSocket) {

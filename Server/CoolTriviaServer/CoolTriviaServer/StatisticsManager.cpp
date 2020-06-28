@@ -1,31 +1,31 @@
 #include "StatisticsManager.h"
+#include <exception>
+
+// Ctor
+StatisticsManager::StatisticsManager(IDatabase* m_database)
+{
+	this->m_database = m_database;
+}
+// Dtor
+StatisticsManager::~StatisticsManager()
+{
+	delete m_database;
+}
 
 // Function will return the statistics 
 // The syntax of the vector:
-// {user1:bestscore1, user2:bestscore2, user3:bestscore3, user4:bestscore4, user5:bestscore5, user1:numOfGames:TotalAnswers:TotalCorrectAnswers:AvgTimeForAnswer, ...}
+// {user1:bestscore1, user2:bestscore2, user3:bestscore3, user4:bestscore4, user5:bestscore5, currentuser:numOfGames:TotalAnswers:TotalCorrectAnswers:AvgTimeForAnswer}
 // If there are less than 5 users, the left spaces (from the top 5) will be "0"
-vector<string> StatisticsManager::getStatistics()
+vector<string> StatisticsManager::getStatistics(string username)
 {
-	vector<string> topFive, usersStatistics;
-
+	vector<string> topFive;
 	topFive = m_database->getTopFive();
-	usersStatistics = getUsersStatistics();
-
-	topFive.insert(topFive.end(), usersStatistics.begin(), usersStatistics.end());
-	
-	return topFive; // The concatenated vector
-}
-
-// Function will return the statistics of all the users
-vector<string> StatisticsManager::getUsersStatistics()
-{
-	vector<string> result, usernames = m_database->getUsernames();
-
-	for (auto& username : usernames)
+	topFive.push_back(getUserStats(username));
+	for (auto& a : topFive)
 	{
-		result.push_back(getUserStats(username));
+		cout << a << endl;
 	}
-	return result;
+	return topFive; // Final vector
 }
 
 // Function will return all the statistics of the user

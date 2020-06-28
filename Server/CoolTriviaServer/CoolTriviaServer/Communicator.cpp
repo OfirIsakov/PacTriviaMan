@@ -147,6 +147,12 @@ void Communicator::handleNewClient()
 		{
 			cout << clientSocket << endl;
 			cout << e.what() << endl;
+			// remove it form the logged users
+			if (dynamic_cast<MenuRequestHandler*>(currentHandler))
+			{
+				this->m_handlerFactory.getLoginManager().logout(((MenuRequestHandler*)currentHandler)->getLoggedUser().getUsername());
+			}
+			//TODORO add the check for all states except LoginRequestHandler
 			// delete the client element from the map
 			for (auto it = this->m_clients.begin(); it != this->m_clients.end(); it++) {
 				if (it->first == clientSocket) {

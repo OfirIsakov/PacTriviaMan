@@ -29,5 +29,8 @@ public:
 
 	bool isRequestRelevant(RequestInfo info);
 	RequestResult handleRequest(RequestInfo info);
+
+	// getters
+	LoggedUser getLoggedUser();
 };
 

@@ -16,6 +16,7 @@ RequestResult LoginRequestHandler::handleRequest(RequestInfo info)
 	vector<unsigned char> answer;
 	ErrorResponse errorReponse;
 
+	std::cout << "code: " << info.id << std::endl;
 	switch (info.id)
 	{
 	case signupCode:

@@ -120,7 +120,11 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo info)
 
 	createRoomRequest = JsonRequestPacketDeserializer::deserializeCreateRoomRequest(info.buffer); // deserialize the buffer
 
-	int id = this->m_roomManager.getRoomsData().rbegin()->id;
+	int id = 0;
+	if (this->m_roomManager.getRoomsData().size() != 0) // if there are rooms
+	{
+		id = this->m_roomManager.getRoomsData().rbegin()->id;
+	}
 	string name = createRoomRequest.roomName;
 	int maxPlayers = createRoomRequest.maxUsers;
 	unsigned int timePerQuestion = createRoomRequest.answerTimeout;

@@ -17,7 +17,6 @@ RequestResult RoomMemberRequestHandler::leaveRoom(RequestInfo info)
 
 RequestResult RoomMemberRequestHandler::getRoomState(RequestInfo info)
 {
-	//TODORO this is code copy from RoomAdminRequestHandler::getRoomState
 	IRequestHandler* handler;
 	vector<unsigned char> answer;
 	GetRoomStateResponse roomStateReponse;

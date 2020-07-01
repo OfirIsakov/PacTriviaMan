@@ -175,8 +175,7 @@ void Communicator::handleNewClient()
 		{
 			cout << "Error in socket: " << clientSocket << endl;
 			cout << e.what() << endl;
-			// remove it form the logged users
-			//TODORO add the check for all states except LoginRequestHandler
+			// remove it from the logged users
 			if (dynamic_cast<RoomAdminRequestHandler*>(currentHandler))
 			{
 				this->m_handlerFactory.getLoginManager().logout(((MenuRequestHandler*)((RoomAdminRequestHandler*)currentHandler)->closeRoom(RequestInfo()).newHandler)->getLoggedUser().getUsername());

@@ -4,6 +4,7 @@
 #include "LoggedUser.h"
 #include "GameManager.h"
 #include "RequestHandlerFactory.h"
+#include "consts.h"
 
 class RequestHandlerFactory;
 

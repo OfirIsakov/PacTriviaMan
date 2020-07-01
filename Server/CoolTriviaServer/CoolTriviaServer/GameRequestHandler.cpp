@@ -17,11 +17,6 @@ RequestResult GameRequestHandler::getGameResults(RequestInfo info)
 	GetGameResultsResponse gameResultReponse;
 	vector<Room> rooms;
 
-	for (auto& player : )
-	{
-
-	}
-
 	handler = m_handlerFactory.createMenuRequestHandler(this->m_user);
 
 	// serialize new answer
@@ -59,10 +54,10 @@ GameRequestHandler::~GameRequestHandler()
 
 bool GameRequestHandler::isRequestRelevant(RequestInfo info)
 {
-	return info.id == LeaveGameCode ||
-		info.id == GetQuestionCode ||
-		info.id == SubmitAnswerCode ||
-		info.id == GetGameResultCode;
+	return info.id == leaveGameCode ||
+		info.id == getQuestionCode ||
+		info.id == submitAnswerCode ||
+		info.id == getGameResultCode;
 }
 
 RequestResult GameRequestHandler::handleRequest(RequestInfo info)
@@ -76,19 +71,19 @@ RequestResult GameRequestHandler::handleRequest(RequestInfo info)
 	{
 		switch (info.id)
 		{
-		case LeaveGameCode:
+		case leaveGameCode:
 			result = this->leaveGame(info);
 
 			break;
-		case GetQuestionCode:
+		case getQuestionCode:
 			result = this->getQuestion(info);
 
 			break;
-		case SubmitAnswerCode:
+		case submitAnswerCode:
 			result = this->submitAnswer(info);
 
 			break;
-		case GetGameResultCode:
+		case getGameResultCode:
 			result = this->getGameResults(info);
 
 			break;

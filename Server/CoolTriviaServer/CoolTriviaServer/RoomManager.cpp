@@ -62,7 +62,7 @@ vector<Room> RoomManager::getRooms()
 	return rooms;
 }
 
-Room RoomManager::getRoom(int ID)
+Room& RoomManager::getRoom(int ID)
 {
 	if (this->m_rooms.find(ID) != this->m_rooms.end()) {
 		return this->m_rooms.find(ID)->second;

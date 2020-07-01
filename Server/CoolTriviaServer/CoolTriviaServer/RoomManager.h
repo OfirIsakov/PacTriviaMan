@@ -19,6 +19,6 @@ public:
 	void setRoomState(int ID, int state);
 	vector<RoomData> getRoomsData();
 	vector<Room> getRooms();
-	Room getRoom(int ID);
+	Room& getRoom(int ID);
 };
 

@@ -92,7 +92,7 @@ RequestResult MenuRequestHandler::joinRoom(RequestInfo info)
 	try
 	{
 		if (this->m_roomManager.getRoomState(joinRoomRequest.roomId) == alreadyStartedRoom) {
-
+			throw RoomIsFullException();
 		}
 		room.addUser(this->m_user);
 		joinRoomReponse = { successStatus };

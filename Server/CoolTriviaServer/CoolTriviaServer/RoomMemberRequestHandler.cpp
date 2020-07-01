@@ -22,6 +22,10 @@ RequestResult RoomMemberRequestHandler::getRoomState(RequestInfo info)
 	GetRoomStateResponse roomStateReponse;
 	RoomData data = this->m_room.getData();
 
+	for (auto& i : this->m_room.getAllUsers())
+	{
+		std::cout << i << std::endl;
+	}
 	roomStateReponse = { successStatus, data.isActive == alreadyStartedRoom, this->m_room.getAllUsers(), data.numOfQuestionsInGame, data.timePerQuestion };
 
 	handler = nullptr;

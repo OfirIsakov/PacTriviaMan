@@ -21,10 +21,6 @@ vector<string> StatisticsManager::getStatistics(string username)
 	vector<string> topFive;
 	topFive = m_database->getTopFive();
 	topFive.push_back(getUserStats(username));
-	for (auto& a : topFive)
-	{
-		cout << a << endl;
-	}
 	return topFive; // Final vector
 }
 

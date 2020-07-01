@@ -79,7 +79,6 @@ RequestResult RoomAdminRequestHandler::handleRequest(RequestInfo info)
 		switch (info.id)
 		{
 		case closeRoomCode:
-			cout << "Close the room" << endl;
 			result = this->closeRoom(info);
 			break;
 		case startGameCode:

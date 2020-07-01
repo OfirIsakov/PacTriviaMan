@@ -31,7 +31,6 @@ void SqliteDataBase::openDB()
 			changeDB(command);
 		}
 		insertQuestions = createInsertQuery();
-		cout << insertQuestions << endl;
 		changeDB(insertQuestions);
 	}
 }

@@ -48,7 +48,11 @@ enum messageCodes
 	closeRoomCode = 10,
 	startGameCode = 11,
 	getRoomStateCode = 12,
-	leaveRoomCode = 13
+	leaveRoomCode = 13,
+	leaveGameCode =  14,
+	getQuestionCode = 15,
+	submitAnswerCode = 16,
+	getGameResultCode = 17
 
 };
 
@@ -68,6 +72,13 @@ enum roomStates
 	waitingForPlayersRoom = 1,
 	alreadyStartedRoom = 2,
 	closedRoom = 3
+};
+
+// questions answers
+enum questionAnswer
+{
+	correct = 1,
+	incorrect = 2
 };
 
 // protocol consts

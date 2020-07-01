@@ -17,12 +17,15 @@ RequestResult RoomMemberRequestHandler::leaveRoom(RequestInfo info)
 
 RequestResult RoomMemberRequestHandler::getRoomState(RequestInfo info)
 {
-	//TODORO this is code copy from RoomAdminRequestHandler::getRoomState
 	IRequestHandler* handler;
 	vector<unsigned char> answer;
 	GetRoomStateResponse roomStateReponse;
 	RoomData data = this->m_room.getData();
 
+	for (auto& i : this->m_room.getAllUsers())
+	{
+		std::cout << i << std::endl;
+	}
 	roomStateReponse = { successStatus, data.isActive == alreadyStartedRoom, this->m_room.getAllUsers(), data.numOfQuestionsInGame, data.timePerQuestion };
 
 	handler = nullptr;

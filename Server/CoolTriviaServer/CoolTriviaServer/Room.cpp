@@ -12,12 +12,7 @@ Room::~Room()
 
 void Room::addUser(LoggedUser user)
 {
-	if (this->m_metadata.maxPlayers > this->m_users.size()) {
-		this->m_users.push_back(user);
-	}
-	else {
-		throw RoomIsFullException();
-	}
+	this->m_users.push_back(user);
 }
 
 void Room::removeUser(LoggedUser user)

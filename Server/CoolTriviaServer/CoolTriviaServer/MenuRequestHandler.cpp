@@ -47,17 +47,17 @@ RequestResult MenuRequestHandler::getPlayersInRoom(RequestInfo info)
 {
 	IRequestHandler* handler;
 	vector<unsigned char> answer;
-	GetPlayersInRoomResponse getRoomsReponse;
+	GetPlayersInRoomResponse getPlayersReponse;
 
 	GetPlayersInRoomRequest playersInRoomRequest = JsonRequestPacketDeserializer::deserializeGetPlayersRequest(info.buffer); // deserialize the buffer
 
 	Room room = this->m_roomManager.getRoom(playersInRoomRequest.roomId);
-	getRoomsReponse = { room.getAllUsers() };
+	getPlayersReponse = { room.getAllUsers() };
 
 	handler = nullptr;
 
 	// serialize new answer
-	answer = JsonResponsePacketSerializer::serializeResponse(getRoomsReponse);
+	answer = JsonResponsePacketSerializer::serializeResponse(getPlayersReponse);
 
 	RequestResult result = { answer, handler };
 	return result;
@@ -120,7 +120,11 @@ RequestResult MenuRequestHandler::createRoom(RequestInfo info)
 
 	createRoomRequest = JsonRequestPacketDeserializer::deserializeCreateRoomRequest(info.buffer); // deserialize the buffer
 
-	int id = this->m_roomManager.getRoomsData().rbegin()->id;
+	int id = 0;
+	if (this->m_roomManager.getRoomsData().size() != 0) // if there are rooms
+	{
+		id = this->m_roomManager.getRoomsData().rbegin()->id;
+	}
 	string name = createRoomRequest.roomName;
 	int maxPlayers = createRoomRequest.maxUsers;
 	unsigned int timePerQuestion = createRoomRequest.answerTimeout;

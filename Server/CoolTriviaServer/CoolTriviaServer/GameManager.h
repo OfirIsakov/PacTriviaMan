@@ -9,6 +9,6 @@ class GameManager
 	vector<Game> m_games;
 public:
 	Game createGame(Room room);
-	void deleteGame();
+	void deleteGame(Game game);
 };
 

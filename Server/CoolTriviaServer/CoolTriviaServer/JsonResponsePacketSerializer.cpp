@@ -36,12 +36,12 @@ vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(LogoutResp
 vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(GetRoomsResponse res)
 {
 	string roomsStr = "";
-	for (int i = 0; i < res.rooms.size() - 1; i++)
+	for (int i = 0; i < res.rooms.size(); i++)
 	{
-		roomsStr += res.rooms[i].name;
+		roomsStr += res.rooms[i].name + ":" + to_string(res.rooms[i].id);
 		if (i != res.rooms.size() - 1)
 		{
-			roomsStr += ", ";
+			roomsStr += ",";
 		}
 	}
 	json getRoomJson = json{ { "Rooms", roomsStr } };
@@ -52,7 +52,7 @@ vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(GetRoomsRe
 vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(GetPlayersInRoomResponse res)
 {
 	string playersStr = "";
-	for (int i = 0; i < res.players.size() - 1; i++)
+	for (int i = 0; i < res.players.size(); i++)
 	{
 		playersStr += res.players[i];
 		if (i != res.players.size() - 1)

@@ -10,6 +10,7 @@
 
 using std::string;
 using std::vector;
+using std::map;
 using std::to_string;
 
 typedef struct LoginResponse
@@ -83,7 +84,37 @@ typedef struct LeaveRoomResponse
 	unsigned int status;
 } LeaveRoomResponse;
 
+typedef struct LeaveGameResponse
+{
+	unsigned int status;
+} LeaveGameResponse;
 
+typedef struct GetQuestionResponse
+{
+	unsigned int status;
+	string question;
+	map<unsigned int, string> answers;
+} GetQuestionResponse;
+
+typedef struct SubmitAnswerResponse
+{
+	unsigned int status;
+	unsigned int correctAnswerId;
+} SubmitAnswerResponse;
+
+typedef struct PlayerResults
+{
+	string username;
+	unsigned int correctAnswersCount;
+	unsigned int wrongAnswersCount;
+	unsigned int averageAnswerTime;
+} PlayerResults;
+
+typedef struct GetGameResultsResponse
+{
+	unsigned int status;
+	vector<PlayerResults> results;
+} GetGameResultsResponse;
 
 
 class JsonResponsePacketSerializer
@@ -106,7 +137,11 @@ public:
 	static vector<unsigned char> serializeResponse(StartGameResponse res);
 	static vector<unsigned char> serializeResponse(GetRoomStateResponse res);
 	static vector<unsigned char> serializeResponse(LeaveRoomResponse res);
-
+	// V4.0.0
+	static vector<unsigned char> serializeResponse(LeaveGameResponse res);
+	static vector<unsigned char> serializeResponse(GetQuestionResponse res);
+	static vector<unsigned char> serializeResponse(SubmitAnswerResponse res);
+	static vector<unsigned char> serializeResponse(GetGameResultsResponse res);
 	// General create response
 	static vector<unsigned char> createResponse(int codeBit, string jsonString, int length);
 

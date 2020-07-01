@@ -2,14 +2,10 @@
 
 Game GameManager::createGame(Room room)
 {
-	Game game();
-	return ;
+	Game game = Game();
+	return game;
 }
 
 void GameManager::deleteGame(Game game)
-{
-}
-
-void GameManager::deleteGame()
 {
 }

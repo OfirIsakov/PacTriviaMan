@@ -55,7 +55,7 @@ typedef struct CreateRoomRequest
 
 typedef struct SubmitAnswerRequest
 {
-	unsigned int answerId
+	unsigned int answerId;
 } SubmitAnswerRequest;
 
 class IRequestHandler

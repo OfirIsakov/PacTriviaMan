@@ -21,8 +21,23 @@ void Game::getQuestionForUser(LoggedUser user)
 	}
 }
 
+// Function will submit the answer and change the gamedata according to the answer
 void Game::submitAnswer(LoggedUser user, string answer)
 {
+	for (auto& player : m_players)
+	{
+		if (((LoggedUser)player.first).getUsername() == user.getUsername())
+		{
+			if (player.second.currentQuestion.getCorrentAnswer() == answer)
+			{
+				player.second.correctAnswerCount += 1;
+			}
+			else
+			{
+				player.second.wrongAnswerCount += 1;
+			}
+		}
+	}
 }
 
 void Game::removePlayer(LoggedUser user)

@@ -7,9 +7,9 @@
 typedef struct GameData
 {
 	Question currentQuestion;
-	unsigned int correctAnswerCount;
-	unsigned int wrongAnswerCount;
-	unsigned int averangeAnswerTime;
+	unsigned int correctAnswerCount = 0;
+	unsigned int wrongAnswerCount = 0;
+	unsigned int averageAnswerTime;
 } GameData;
 
 using std::map;

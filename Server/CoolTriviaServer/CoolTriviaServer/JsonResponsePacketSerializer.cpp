@@ -52,7 +52,7 @@ vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(GetRoomsRe
 vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(GetPlayersInRoomResponse res)
 {
 	string playersStr = "";
-	for (int i = 0; i < res.players.size() - 1; i++)
+	for (int i = 0; i < res.players.size(); i++)
 	{
 		playersStr += res.players[i];
 		if (i != res.players.size() - 1)

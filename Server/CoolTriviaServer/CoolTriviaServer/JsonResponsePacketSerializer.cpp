@@ -145,3 +145,46 @@ vector<unsigned char> JsonResponsePacketSerializer::createResponse(int codeBit, 
 
 	return buffer;
 }
+
+vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(LeaveGameResponse res)
+{
+	return serializeStatusMsg(leaveGameCode, res.status);
+}
+
+vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(GetQuestionResponse res)
+{
+	string answers = "";
+	int counter = 0;
+	for (auto& answer : res.answers)
+	{
+		counter++;
+		answers += answer.second + ":" + to_string(answer.first);
+		if (counter == 3)
+			break;
+	}
+	answers += res.answers.rbegin()->second + ":" + to_string(res.answers.rbegin()->first);
+
+	json getQuestionResponse = json{ { "status", res.status }, { "question", res.question }, { "answers", answers } };
+	return createResponse(getQuestionCode, getQuestionResponse.dump(), getQuestionResponse.dump().length());
+}
+
+vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(SubmitAnswerResponse res)
+{
+	json submitAnswerResponse = json{ { "status", res.status }, { "correctAnswerId", res.correctAnswerId } };
+	return createResponse(submitAnswerCode, submitAnswerResponse.dump(), submitAnswerResponse.dump().length());
+}
+
+vector<unsigned char> JsonResponsePacketSerializer::serializeResponse(GetGameResultsResponse res)
+{
+	string results = "";
+	for (int i = 0; i < res.results.size(); i++)
+	{
+		results += res.results[i].username + ":" + to_string(res.results[i].correctAnswersCount) + ":" + to_string(res.results[i].wrongAnswersCount) + ":" + to_string(res.results[i].averageAnswerTime);
+		if (i != res.results.size() - 1)
+		{
+			results += ",";
+		}
+	}
+	json getRoomJson = json{ { "status", res.status }, {"results", results} };
+	return createResponse(getRoomsCode, getRoomJson.dump(), getRoomJson.dump().length());
+}

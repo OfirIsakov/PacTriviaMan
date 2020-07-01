@@ -47,17 +47,17 @@ RequestResult MenuRequestHandler::getPlayersInRoom(RequestInfo info)
 {
 	IRequestHandler* handler;
 	vector<unsigned char> answer;
-	GetPlayersInRoomResponse getRoomsReponse;
+	GetPlayersInRoomResponse getPlayersReponse;
 
 	GetPlayersInRoomRequest playersInRoomRequest = JsonRequestPacketDeserializer::deserializeGetPlayersRequest(info.buffer); // deserialize the buffer
 
 	Room room = this->m_roomManager.getRoom(playersInRoomRequest.roomId);
-	getRoomsReponse = { room.getAllUsers() };
+	getPlayersReponse = { room.getAllUsers() };
 
 	handler = nullptr;
 
 	// serialize new answer
-	answer = JsonResponsePacketSerializer::serializeResponse(getRoomsReponse);
+	answer = JsonResponsePacketSerializer::serializeResponse(getPlayersReponse);
 
 	RequestResult result = { answer, handler };
 	return result;

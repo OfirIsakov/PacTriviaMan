@@ -11,7 +11,9 @@ RoomManager::~RoomManager()
 
 void RoomManager::createRoom(LoggedUser owner, RoomData data)
 {
-	this->m_rooms.emplace(data.id, Room(data));
+	Room room = Room(data);
+	room.addUser(owner);
+	this->m_rooms.emplace(data.id, room);
 }
 
 void RoomManager::deleteRoom(int ID)
